@@ -12,7 +12,29 @@ function listen(serverPort, launchWindow, cb) {
             cb();
         }
         if (launchWindow) {
-            require("child_process").exec("open http://localhost:" + serverPort);
+            // Validate serverPort is a number to prevent command injection
+            const portNum = parseInt(serverPort, 10);
+            if (isNaN(portNum) || portNum < 1 || portNum > 65535) {
+                console.error("Invalid port number");
+                return;
+            }
+            
+            const url = `http://localhost:${portNum}`;
+            const { platform } = require('os');
+            const { spawn } = require('child_process');
+            
+            // Use platform-specific commands to open URL
+            switch (platform()) {
+                case 'darwin': // macOS
+                    spawn('open', [url]);
+                    break;
+                case 'win32': // Windows
+                    spawn('cmd', ['/c', 'start', url]);
+                    break;
+                default: // Linux and others
+                    spawn('xdg-open', [url]);
+                    break;
+            }
         }
     });
 }
