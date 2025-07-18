@@ -1,5 +1,6 @@
 var express = require("express");
 var app = express();
+var basicAuth = require('express-basic-auth');
 
 // Exports
 module.exports = {
@@ -18,6 +19,14 @@ function listen(serverPort, launchWindow, cb) {
 }
 
 function coverage(serverPort, launchWindow) {
+    // SECURITY: Add basic authentication to protect sensitive coverage reports
+    // This prevents unauthorized access to code coverage data which could expose
+    // internal implementation details and potential attack vectors
+    app.use(basicAuth({
+        users: { 'admin': process.env.COVERAGE_PASSWORD || 'changeme' },
+        challenge: true,
+        realm: 'Coverage Reports - Restricted Access'
+    }));
     app.use(express.static("coverage/lcov-report"));
     return listen(serverPort, launchWindow);
 }
@@ -28,6 +37,14 @@ if (require.main === module) {
     var run = process.argv[3];
     switch (run) {
         case "examples":
+            // SECURITY: Add basic authentication to protect example routes
+            // This prevents unauthorized access to example code and configurations
+            // which could potentially reveal sensitive implementation details
+            app.use(basicAuth({
+                users: { 'admin': process.env.EXAMPLES_PASSWORD || 'changeme' },
+                challenge: true,
+                realm: 'Examples - Restricted Access'
+            }));
             app.use(express.static("."));
             app.get("/500", function(req, res) {
                 res.send(500);
