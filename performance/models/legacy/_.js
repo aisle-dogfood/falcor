@@ -711,12 +711,31 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Security: Prevent prototype pollution by safely accessing properties
+                                if (Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    key = key[key.index];
+                                } else {
+                                    key = key[0]; // Default to first element if index not present
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Security: Safely access object properties to prevent prototype pollution
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        key = key.offset;
+                                    } else if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key = key.from;
+                                    } else {
+                                        key = 0; // Default value
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Security: Prevent prototype pollution by safely accessing properties
+                                if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key = key.offset;
+                                } else if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key = key.from;
+                                } else {
+                                    key = 0; // Default value
+                                }
                             }
                         }
                         if (key == null) {
