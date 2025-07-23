@@ -35,10 +35,17 @@ function getFileName() {
             }
 
             else if (foundName) {
-                name = x;
+                // Sanitize the filename to prevent path traversal
+                // Only allow alphanumeric characters, hyphens, underscores, and .csv extension
+                if (/^[\w\-]+\.csv$/.test(x)) {
+                    name = x;
+                } else {
+                    console.warn('\nInvalid filename provided. Using default name: ' + DEFAULT_NAME);
+                }
+                foundName = false; // Reset flag after processing the name
             }
         });
         return name;
     }
     return DEFAULT_NAME;
-};
+}
