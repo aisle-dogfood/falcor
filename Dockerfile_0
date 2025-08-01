@@ -1,0 +1,23 @@
+FROM public.ecr.aws/docker/library/node:10
+
+# Create app directory
+WORKDIR /app
+
+# Copy package files first for better caching
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy project files
+COPY . .
+
+# Create non-root user
+RUN useradd -m -s /bin/bash app && \
+    chown -R app:app /app
+
+# Set user
+USER app
+
+# Set PATH to include user's local bin
+ENV PATH="$HOME/.local/bin:$PATH"
