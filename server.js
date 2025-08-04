@@ -1,5 +1,11 @@
 var express = require("express");
+var cookieParser = require("cookie-parser");
+var csrf = require("csurf");
 var app = express();
+
+// Setup CSRF protection
+app.use(cookieParser());
+var csrfProtection = csrf({ cookie: true });
 
 // Exports
 module.exports = {
@@ -19,6 +25,14 @@ function listen(serverPort, launchWindow, cb) {
 
 function coverage(serverPort, launchWindow) {
     app.use(express.static("coverage/lcov-report"));
+    // Apply CSRF protection
+    app.use(csrfProtection);
+    
+    // Add a route to provide CSRF token to the client
+    app.get("/csrf-token", function(req, res) {
+        res.json({ csrfToken: req.csrfToken() });
+    });
+    
     return listen(serverPort, launchWindow);
 }
 
@@ -29,6 +43,14 @@ if (require.main === module) {
     switch (run) {
         case "examples":
             app.use(express.static("."));
+            // Apply CSRF protection
+            app.use(csrfProtection);
+            
+            // Add a route to provide CSRF token to the client
+            app.get("/csrf-token", function(req, res) {
+                res.json({ csrfToken: req.csrfToken() });
+            });
+            
             app.get("/500", function(req, res) {
                 res.send(500);
             });
