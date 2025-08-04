@@ -1,0 +1,51 @@
+FROM public.ecr.aws/docker/library/node:16-slim
+
+# Create a non-root user
+RUN useradd -m -s /bin/bash app
+
+# Set up working directory
+WORKDIR /app
+
+# Copy package.json only (not package-lock.json)
+COPY package.json ./
+
+# Configure npm to use the public registry
+RUN npm config set registry https://registry.npmjs.org/
+
+# Install dependencies with legacy peer deps to handle dependency conflicts
+RUN npm install --no-package-lock --legacy-peer-deps
+
+# Copy project files
+COPY . .
+
+# Give ownership to the non-root user
+RUN chown -R app:app /app
+
+# Switch to non-root user
+USER app
+
+# Set PATH to include node_modules/.bin
+ENV PATH="/app/node_modules/.bin:$PATH"
+
+# No CMD needed as we'll run commands via run_dockerfile
+# Switch to non-root user
+USER app
+
+# Set PATH to include node_modules/.bin
+ENV PATH="/app/node_modules/.bin:$PATH"
+
+# No CMD needed as we'll run commands via run_dockerfile
+# Switch to non-root user
+USER app
+
+# Set PATH to include node_modules/.bin
+ENV PATH="/app/node_modules/.bin:$PATH"
+
+# No CMD needed as we'll run commands via run_dockerfile
+RUN chown -R app:app /app
+
+# Switch to non-root user
+USER app
+
+# Set PATH to include node_modules/.bin
+ENV PATH="/app/node_modules/.bin:$HOME/.local/bin:$PATH"
