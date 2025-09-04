@@ -12,7 +12,15 @@ function listen(serverPort, launchWindow, cb) {
             cb();
         }
         if (launchWindow) {
-            require("child_process").exec("open http://localhost:" + serverPort);
+            // SECURITY: Use spawn instead of exec to prevent command injection
+            // Sanitize port number to ensure it's a valid integer within port range
+            var sanitizedPort = Number(serverPort);
+            if (!isNaN(sanitizedPort) && sanitizedPort > 0 && sanitizedPort < 65536) {
+                // Use spawn with array arguments to safely handle the command and its parameters
+                require("child_process").spawn("open", ["http://localhost:" + sanitizedPort]);
+            } else {
+                console.error("Invalid port number provided:", serverPort);
+            }
         }
     });
 }
