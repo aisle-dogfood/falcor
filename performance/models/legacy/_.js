@@ -2949,9 +2949,9 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         }
                         original[original.length = column] = key;
                         optimized[optimized.length = column + offset] = key;
-                        context = contextParent[key];
-                        message = messageParent && messageParent[key];
-                        batchedPathMap = batchedPathMap[key];
+                        context = (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? contextParent[key] : undefined;
+                        message = messageParent && (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? messageParent[key] : undefined;
+                        batchedPathMap = (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? batchedPathMap[key] : undefined;
                         var sizeOffset$2 = 0;
                         if (message == null) {
                             messageValue = message;
@@ -3309,8 +3309,8 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                             continue;
                                         }
                                         optimized[optimized.length = column + offset] = key;
-                                        context = contextParent[key];
-                                        message = messageParent && messageParent[key];
+                                        context = (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? contextParent[key] : undefined;
+                                        message = messageParent && (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? messageParent[key] : undefined;
                                         var sizeOffset$3 = 0;
                                         if (message == null) {
                                             messageValue = message;
@@ -3685,8 +3685,8 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                         key = path[column];
                                         if (key != null) {
                                             optimized[optimized.length = column + offset] = key;
-                                            context = contextParent[key];
-                                            message = messageParent && messageParent[key];
+                                            context = (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? contextParent[key] : undefined;
+                                            message = messageParent && (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? messageParent[key] : undefined;
                                             var sizeOffset$4 = 0;
                                             if (message == null) {
                                                 messageValue = message;
@@ -4113,9 +4113,9 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         original[original.length = column] = key;
                         if (key != null) {
                             optimized[optimized.length = column + offset] = key;
-                            context = contextParent[key];
-                            message = messageParent && messageParent[key];
-                            batchedPathMap = batchedPathMap[key];
+                            context = (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? contextParent[key] : undefined;
+                            message = messageParent && (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? messageParent[key] : undefined;
+                            batchedPathMap = (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') ? batchedPathMap[key] : undefined;
                             var sizeOffset$5 = 0;
                             if (message == null) {
                                 messageValue = message;
