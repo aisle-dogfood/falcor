@@ -5274,12 +5274,38 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                                if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    key.index = 0;
+                                }
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : undefined;
+                                    if (keyOffset === void 0) {
+                                        var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.from = 0;
+                                        }
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                            key.offset = keyFrom;
+                                        }
+                                        keyOffset = key.offset;
+                                    }
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : undefined;
+                                if (keyOffset === void 0) {
+                                    var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.from = 0;
+                                    }
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        key.offset = keyFrom;
+                                    }
+                                    keyOffset = key.offset;
+                                }
+                                key = keyOffset;
                             }
                         }
                         if (key != null) {
