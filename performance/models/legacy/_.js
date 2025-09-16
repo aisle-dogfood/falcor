@@ -4102,12 +4102,12 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[key.hasOwnProperty('index') ? key.index : (key.constructor === Object && key !== Object.prototype ? (key.index = 0) : 0)];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset === void 0 && (key.constructor === Object && key !== Object.prototype ? (key.offset = key.hasOwnProperty('from') ? key.from : (key.from = 0)) : (key.hasOwnProperty('from') ? key.from : 0)) || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (key.constructor === Object && key !== Object.prototype ? (key.offset = key.hasOwnProperty('from') ? key.from : (key.from = 0)) : (key.hasOwnProperty('from') ? key.from : 0)) || key.offset;
                             }
                         }
                         original[original.length = column] = key;
