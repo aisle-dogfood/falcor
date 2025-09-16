@@ -5019,6 +5019,14 @@ function invalidatePath(path_, cache, parent, bound) {
 }
 
 function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bound) {
+    // Helper function to safely assign properties and prevent prototype pollution
+    function safeAssign(obj, prop, value) {
+        if (obj != null && typeof obj === 'object' && obj.constructor === Object && !Object.prototype.hasOwnProperty.call(Object.prototype, prop)) {
+            obj[prop] = value;
+        }
+        return obj[prop] !== undefined ? obj[prop] : value;
+    }
+    
     var self = this,
         root = self._root,
         generation = GENERATION_GENERATION++,
@@ -5075,8 +5083,8 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
     contexts[-1] = contextParent;
     for (; index < length; paths.index = ++index) {
         path = paths[index];
-        column = path.index || (path.index = 0);
-        offset = path.offset || (path.offset = 0);
+        column = path.index || safeAssign(path, 'index', 0);
+        offset = path.offset || safeAssign(path, 'offset', 0);
         last = path.length - 1;
         depth = -1;
         refs[-1] = path;
@@ -5091,12 +5099,12 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[key.index || safeAssign(key, 'index', 0)];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset === void 0 && (safeAssign(key, 'offset', key.from || safeAssign(key, 'from', 0))) || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (safeAssign(key, 'offset', key.from || safeAssign(key, 'from', 0))) || key.offset;
                             }
                         }
                         if (key == null) {
