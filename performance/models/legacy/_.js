@@ -316,12 +316,31 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                            key.index = 0;
+                        }
+                        key = key[key.index];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (key.offset === void 0) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.from = 0;
+                                }
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key.offset = key.from;
+                                }
+                            }
+                            key = key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        if (key.offset === void 0) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                key.from = 0;
+                            }
+                            if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                key.offset = key.from;
+                            }
+                        }
+                        key = key.offset;
                     }
                 }
                 if (key == null) {
@@ -550,12 +569,31 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                            key.index = 0;
+                        }
+                        key = key[key.index];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (key.offset === void 0) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.from = 0;
+                                }
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key.offset = key.from;
+                                }
+                            }
+                            key = key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        if (key.offset === void 0) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                key.from = 0;
+                            }
+                            if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                key.offset = key.from;
+                            }
+                        }
+                        key = key.offset;
                     }
                 }
                 original[original.length = column] = key;
@@ -683,7 +721,10 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
     contexts[-1] = contextParent;
     for (; index < length; paths.index = ++index) {
         path = paths[index];
-        column = path.index || (path.index = 0);
+        if (!Object.prototype.hasOwnProperty.call(path, 'index')) {
+            path.index = 0;
+        }
+        column = path.index;
         last = path.length - 1;
         refs[-1] = path;
         crossed = [];
@@ -711,12 +752,31 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    key.index = 0;
+                                }
+                                key = key[key.index];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (key.offset === void 0) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.from = 0;
+                                        }
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                            key.offset = key.from;
+                                        }
+                                    }
+                                    key = key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (key.offset === void 0) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.from = 0;
+                                    }
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        key.offset = key.from;
+                                    }
+                                }
+                                key = key.offset;
                             }
                         }
                         if (key == null) {
@@ -946,12 +1006,31 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    key.index = 0;
+                                }
+                                key = key[key.index];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (key.offset === void 0) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.from = 0;
+                                        }
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                            key.offset = key.from;
+                                        }
+                                    }
+                                    key = key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (key.offset === void 0) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.from = 0;
+                                    }
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        key.offset = key.from;
+                                    }
+                                }
+                                key = key.offset;
                             }
                         }
                         original[original.length = column] = key;
@@ -1174,8 +1253,12 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
+                        if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                            key.index = 0;
+                        }
                         if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                            key.index = 0;
+                            key = key[key.index];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
@@ -1183,7 +1266,19 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                             break ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
+                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                        key.offset = key.from || 0;
+                    }
+                    if (!Object.prototype.hasOwnProperty.call(key, 'to')) {
+                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                            key.from = 0;
+                        }
+                        key.to = key.from + (key.length || 1) - 1;
+                    }
+                    if (++key.offset > key.to) {
+                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                            key.from = 0;
+                        }
                         key.offset = key.from;
                         continue ascending;
                     }
@@ -1278,12 +1373,31 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                            key.index = 0;
+                        }
+                        key = key[key.index];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (key.offset === void 0) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.from = 0;
+                                }
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key.offset = key.from;
+                                }
+                            }
+                            key = key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        if (key.offset === void 0) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                key.from = 0;
+                            }
+                            if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                key.offset = key.from;
+                            }
+                        }
+                        key = key.offset;
                     }
                 }
                 if (key == null) {
@@ -1544,12 +1658,31 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                            key.index = 0;
+                        }
+                        key = key[key.index];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (key.offset === void 0) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.from = 0;
+                                }
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key.offset = key.from;
+                                }
+                            }
+                            key = key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        if (key.offset === void 0) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                key.from = 0;
+                            }
+                            if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                key.offset = key.from;
+                            }
+                        }
+                        key = key.offset;
                     }
                 }
                 original[original.length = column] = key;
@@ -2050,12 +2183,31 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                key.index = 0;
+                            }
+                            key = key[key.index];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (key.offset === void 0) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.from = 0;
+                                    }
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        key.offset = key.from;
+                                    }
+                                }
+                                key = key.offset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (key.offset === void 0) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.from = 0;
+                                }
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key.offset = key.from;
+                                }
+                            }
+                            key = key.offset;
                         }
                     }
                     if (key == null) {
@@ -2332,12 +2484,31 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                key.index = 0;
+                            }
+                            key = key[key.index];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (key.offset === void 0) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.from = 0;
+                                    }
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        key.offset = key.from;
+                                    }
+                                }
+                                key = key.offset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (key.offset === void 0) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.from = 0;
+                                }
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key.offset = key.from;
+                                }
+                            }
+                            key = key.offset;
                         }
                     }
                     original[original.length = column] = key;
