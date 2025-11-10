@@ -1303,9 +1303,16 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                         '$size': 0
                     }).__generation = context.__generation;
                 }
-                contextParent[key] = context = contextParent[key] || {
-                    '$size': 0
-                };
+                // Prevent prototype pollution by checking for dangerous keys
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    context = {
+                        '$size': 0
+                    };
+                } else {
+                    contextParent[key] = context = contextParent[key] || {
+                        '$size': 0
+                    };
+                }
                 context.__parent = contextParent;
                 context.__key = key;
                 while (Array.isArray(contextValue = (contextType // If the context is a sentinel, get its value.
@@ -1735,7 +1742,12 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                                 message && !context.__generation !== void 0 && (message.__generation === void 0 || context.__generation > message.__generation)) {
                                 message.__generation = context.__generation;
                             }
-                            contextParent[key] = context = message;
+                            // Prevent prototype pollution by checking for dangerous keys
+                            if (key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {
+                                contextParent[key] = context = message;
+                            } else {
+                                context = message;
+                            }
                             break inserting;
                         }
                     context.__parent = contextParent;
@@ -2949,9 +2961,16 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         }
                         original[original.length = column] = key;
                         optimized[optimized.length = column + offset] = key;
-                        context = contextParent[key];
-                        message = messageParent && messageParent[key];
-                        batchedPathMap = batchedPathMap[key];
+                        // Prevent prototype pollution by checking for dangerous keys
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            context = void 0;
+                            message = void 0;
+                            batchedPathMap = void 0;
+                        } else {
+                            context = contextParent[key];
+                            message = messageParent && messageParent[key];
+                            batchedPathMap = batchedPathMap[key];
+                        }
                         var sizeOffset$2 = 0;
                         if (message == null) {
                             messageValue = message;
@@ -3309,8 +3328,14 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                             continue;
                                         }
                                         optimized[optimized.length = column + offset] = key;
-                                        context = contextParent[key];
-                                        message = messageParent && messageParent[key];
+                                        // Prevent prototype pollution by checking for dangerous keys
+                                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                            context = void 0;
+                                            message = void 0;
+                                        } else {
+                                            context = contextParent[key];
+                                            message = messageParent && messageParent[key];
+                                        }
                                         var sizeOffset$3 = 0;
                                         if (message == null) {
                                             messageValue = message;
@@ -3685,8 +3710,14 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                         key = path[column];
                                         if (key != null) {
                                             optimized[optimized.length = column + offset] = key;
-                                            context = contextParent[key];
-                                            message = messageParent && messageParent[key];
+                                            // Prevent prototype pollution by checking for dangerous keys
+                                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                                context = void 0;
+                                                message = void 0;
+                                            } else {
+                                                context = contextParent[key];
+                                                message = messageParent && messageParent[key];
+                                            }
                                             var sizeOffset$4 = 0;
                                             if (message == null) {
                                                 messageValue = message;
@@ -4113,9 +4144,16 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         original[original.length = column] = key;
                         if (key != null) {
                             optimized[optimized.length = column + offset] = key;
-                            context = contextParent[key];
-                            message = messageParent && messageParent[key];
-                            batchedPathMap = batchedPathMap[key];
+                            // Prevent prototype pollution by checking for dangerous keys
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                context = void 0;
+                                message = void 0;
+                                batchedPathMap = void 0;
+                            } else {
+                                context = contextParent[key];
+                                message = messageParent && messageParent[key];
+                                batchedPathMap = batchedPathMap[key];
+                            }
                             var sizeOffset$5 = 0;
                             if (message == null) {
                                 messageValue = message;
