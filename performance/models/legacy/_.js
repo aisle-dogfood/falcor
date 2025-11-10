@@ -2332,12 +2332,27 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            // Prevent prototype pollution by checking if key is a prototype object
+                            if (key.constructor && key.constructor.prototype === key) {
+                                key = key.index || 0;
+                            } else {
+                                key = key[key.index || (key.index = 0)];
+                            }
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype === key) {
+                                    key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                                } else {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                }
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by checking if key is a prototype object
+                            if (key.constructor && key.constructor.prototype === key) {
+                                key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                            } else {
+                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            }
                         }
                     }
                     original[original.length = column] = key;
