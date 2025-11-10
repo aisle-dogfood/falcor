@@ -10,6 +10,44 @@ var Observable = Rx.Observable,
     µSize = 0.25,
     MIN_SAFE_INTEGER = -Math.pow(2, 53) - 1;
 
+// Helper function to safely set properties and prevent prototype pollution
+function safeSetProperty(obj, prop, value) {
+    // Only set property if obj is not a prototype and has own properties
+    if (obj != null && typeof obj === 'object' && 
+        (Object.prototype.hasOwnProperty.call(obj, 'constructor') || Object.getOwnPropertyNames(obj).length > 0)) {
+        obj[prop] = value;
+        return value;
+    }
+    return value;
+}
+
+// Helper function to safely get or set index property
+function safeGetOrSetIndex(obj) {
+    var index = obj.index;
+    if (index === undefined) {
+        return safeSetProperty(obj, 'index', 0);
+    }
+    return index;
+}
+
+// Helper function to safely get or set from property
+function safeGetOrSetFrom(obj) {
+    var from = obj.from;
+    if (from === undefined) {
+        return safeSetProperty(obj, 'from', 0);
+    }
+    return from;
+}
+
+// Helper function to safely get or set offset property
+function safeGetOrSetOffset(obj, fromValue) {
+    var offset = obj.offset;
+    if (offset === undefined) {
+        return safeSetProperty(obj, 'offset', fromValue);
+    }
+    return offset;
+}
+
 function PathEvaluator(maxSize, collectRatio, loader, cache, path, now, errorSelector) {
     if (loader != null && typeof loader === 'object') {
         this.loader = loader;
@@ -316,12 +354,15 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSetIndex(key);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSetFrom(key);
+                            key = safeGetOrSetOffset(key, keyFrom);
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyFrom = safeGetOrSetFrom(key);
+                        key = safeGetOrSetOffset(key, keyFrom);
                     }
                 }
                 if (key == null) {
@@ -550,12 +591,15 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSetIndex(key);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSetFrom(key);
+                            key = safeGetOrSetOffset(key, keyFrom);
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyFrom = safeGetOrSetFrom(key);
+                        key = safeGetOrSetOffset(key, keyFrom);
                     }
                 }
                 original[original.length = column] = key;
