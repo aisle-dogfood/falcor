@@ -5427,12 +5427,22 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                    key = key[key.index || (key.index = 0)];
+                                    if (key != null && typeof key === 'object' && key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    }
+                                } else {
+                                    key = key[0]; // Safe fallback for prototype objects
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = 0; // Safe fallback for prototype objects
+                                }
                             }
                         }
                         if (key == null) {
@@ -5450,12 +5460,22 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                    key = key[key.index || (key.index = 0)];
+                                    if (key != null && typeof key === 'object' && key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    }
+                                } else {
+                                    key = key[0]; // Safe fallback for prototype objects
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = 0; // Safe fallback for prototype objects
+                                }
                             }
                         }
                         if (key != null) {
@@ -5527,12 +5547,22 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                    key = key[key.index || (key.index = 0)];
+                                    if (key != null && typeof key === 'object' && key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    }
+                                } else {
+                                    key = key[0]; // Safe fallback for prototype objects
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = 0; // Safe fallback for prototype objects
+                                }
                             }
                         }
                         if (key == null) {
@@ -5552,12 +5582,22 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                    key = key[key.index || (key.index = 0)];
+                                    if (key != null && typeof key === 'object' && key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    }
+                                } else {
+                                    key = key[0]; // Safe fallback for prototype objects
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key !== Object.prototype && key !== Array.prototype && key !== Function.prototype) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = 0; // Safe fallback for prototype objects
+                                }
                             }
                         }
                         if (key != null) {
