@@ -5968,7 +5968,7 @@ function toRoot() {
 
 function serialize(cache) {
     var frame, keys, key, context = cache || this._cache,
-        message = {},
+        message = Object.create(null),
         depth = 0,
         stack = [];
     recursing:
@@ -5992,7 +5992,7 @@ function serialize(cache) {
                     ++depth;
                     continue recursing;
                 } else {
-                    message = message[key] || (message[key] = {});
+                    message = message[key] || (message[key] = Object.create(null));
                     ++depth;
                     continue recursing;
                 }
