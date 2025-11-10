@@ -327,6 +327,10 @@ function getPath(path_, cache, parent, bound) {
                 if (key == null) {
                     continue;
                 }
+                // Prevent prototype pollution by checking for dangerous keys
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
                 original[original.length = column] = key;
                 optimized[optimized.length = column + offset] = key;
                 context = (context = contextParent[key]) && (!((contextExpires = context['$expires']) == null || contextExpires === 1 || contextExpires !== 0 && contextExpires > Date.now()) ? void 0 : context);
@@ -720,6 +724,10 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                             }
                         }
                         if (key == null) {
+                            continue;
+                        }
+                        // Prevent prototype pollution by checking for dangerous keys
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                             continue;
                         }
                         original[original.length = column] = key;
@@ -1554,6 +1562,10 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 }
                 original[original.length = column] = key;
                 if (key != null) {
+                    // Prevent prototype pollution by checking for dangerous keys
+                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                        return;
+                    }
                     optimized[optimized.length = column + offset] = key;
                     context = contextParent[key];
                     var sizeOffset$2 = 0;
@@ -2059,6 +2071,10 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                         }
                     }
                     if (key == null) {
+                        continue;
+                    }
+                    // Prevent prototype pollution by checking for dangerous keys
+                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                         continue;
                     }
                     original[original.length = column] = key;
@@ -2945,6 +2961,10 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                             }
                         }
                         if (key == null) {
+                            continue;
+                        }
+                        // Prevent prototype pollution by checking for dangerous keys
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                             continue;
                         }
                         original[original.length = column] = key;
