@@ -5527,12 +5527,36 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = key.index;
+                                if (keyIndex === void 0 && Object.prototype.hasOwnProperty.call(key, 'index') === false) {
+                                    keyIndex = key.index = 0;
+                                }
+                                key = key[keyIndex || 0];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyOffset = key.offset;
+                                    if (keyOffset === void 0) {
+                                        var keyFrom = key.from;
+                                        if (keyFrom === void 0 && Object.prototype.hasOwnProperty.call(key, 'from') === false) {
+                                            keyFrom = key.from = 0;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(key, 'offset') === false) {
+                                            keyOffset = key.offset = keyFrom || 0;
+                                        }
+                                    }
+                                    key = keyOffset || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyOffset = key.offset;
+                                if (keyOffset === void 0) {
+                                    var keyFrom = key.from;
+                                    if (keyFrom === void 0 && Object.prototype.hasOwnProperty.call(key, 'from') === false) {
+                                        keyFrom = key.from = 0;
+                                    }
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset') === false) {
+                                        keyOffset = key.offset = keyFrom || 0;
+                                    }
+                                }
+                                key = keyOffset || key.offset;
                             }
                         }
                         if (key == null) {
@@ -5552,12 +5576,36 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = key.index;
+                                if (keyIndex === void 0 && Object.prototype.hasOwnProperty.call(key, 'index') === false) {
+                                    keyIndex = key.index = 0;
+                                }
+                                key = key[keyIndex || 0];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyOffset = key.offset;
+                                    if (keyOffset === void 0) {
+                                        var keyFrom = key.from;
+                                        if (keyFrom === void 0 && Object.prototype.hasOwnProperty.call(key, 'from') === false) {
+                                            keyFrom = key.from = 0;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(key, 'offset') === false) {
+                                            keyOffset = key.offset = keyFrom || 0;
+                                        }
+                                    }
+                                    key = keyOffset || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyOffset = key.offset;
+                                if (keyOffset === void 0) {
+                                    var keyFrom = key.from;
+                                    if (keyFrom === void 0 && Object.prototype.hasOwnProperty.call(key, 'from') === false) {
+                                        keyFrom = key.from = 0;
+                                    }
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset') === false) {
+                                        keyOffset = key.offset = keyFrom || 0;
+                                    }
+                                }
+                                key = keyOffset || key.offset;
                             }
                         }
                         if (key != null) {
