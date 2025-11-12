@@ -35,7 +35,8 @@ function getFileName() {
             }
 
             else if (foundName) {
-                name = x;
+                // Sanitize filename to prevent path traversal attacks
+                name = path.basename(x);
             }
         });
         return name;
