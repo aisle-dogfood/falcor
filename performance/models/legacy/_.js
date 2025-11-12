@@ -5427,12 +5427,27 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                    key = key[key.index || (key.index = 0)];
+                                } else {
+                                    key = key[key.index || 0];
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by checking if key is a prototype object
+                                    if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    } else {
+                                        key = key.offset === void 0 ? (key.from || 0) : key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = key.offset === void 0 ? (key.from || 0) : key.offset;
+                                }
                             }
                         }
                         if (key == null) {
@@ -5450,12 +5465,27 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                    key = key[key.index || (key.index = 0)];
+                                } else {
+                                    key = key[key.index || 0];
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by checking if key is a prototype object
+                                    if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    } else {
+                                        key = key.offset === void 0 ? (key.from || 0) : key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = key.offset === void 0 ? (key.from || 0) : key.offset;
+                                }
                             }
                         }
                         if (key != null) {
@@ -5527,12 +5557,27 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                    key = key[key.index || (key.index = 0)];
+                                } else {
+                                    key = key[key.index || 0];
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by checking if key is a prototype object
+                                    if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    } else {
+                                        key = key.offset === void 0 ? (key.from || 0) : key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = key.offset === void 0 ? (key.from || 0) : key.offset;
+                                }
                             }
                         }
                         if (key == null) {
@@ -5552,12 +5597,27 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                    key = key[key.index || (key.index = 0)];
+                                } else {
+                                    key = key[key.index || 0];
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by checking if key is a prototype object
+                                    if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    } else {
+                                        key = key.offset === void 0 ? (key.from || 0) : key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking if key is a prototype object
+                                if (key.constructor && key.constructor.prototype !== key && Object.prototype !== key) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = key.offset === void 0 ? (key.from || 0) : key.offset;
+                                }
                             }
                         }
                         if (key != null) {
