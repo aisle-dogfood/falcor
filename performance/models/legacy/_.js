@@ -5966,6 +5966,10 @@ function toRoot() {
     return this._root._root = this;
 }
 
+function isDangerousKey(key) {
+    return key === '__proto__' || key === 'constructor' || key === 'prototype';
+}
+
 function serialize(cache) {
     var frame, keys, key, context = cache || this._cache,
         message = {},
@@ -5984,15 +5988,15 @@ function serialize(cache) {
             while ((key = keys.pop()) != null) {
                 context = context[key];
                 if (context == null || typeof context !== 'object') {
-                    message[key] = context;
+                    safeAssign(message, key, context);
                     context = frame.context;
                 } else if ( // TODO: replace this with a faster Array check.
                     Array.isArray(context)) {
-                    message = message[key] || (message[key] = []);
+                    message = message[key] || safeAssign(message, key, []);
                     ++depth;
                     continue recursing;
                 } else {
-                    message = message[key] || (message[key] = {});
+                    message = message[key] || safeAssign(message, key, {});
                     ++depth;
                     continue recursing;
                 }
@@ -6003,6 +6007,14 @@ function serialize(cache) {
 
     function internalKeys(x) {
         return x[0] !== '_' || x[1] !== '_';
+    }
+    
+    function safeAssign(obj, key, value) {
+        if (isDangerousKey(key)) {
+            return value;
+        }
+        obj[key] = value;
+        return value;
     }
 }
 
@@ -6066,7 +6078,9 @@ function flatten(obj) {
             for (keyCount = 0; keyCount < keys.length; keyCount++) {
                 key = keys[keyCount];
                 if (key[0] !== '_' || key[1] !== '_') {
-                    flattenedObject[key] = flatten(obj[key]);
+                    if (!isDangerousKey(key)) {
+                        flattenedObject[key] = flatten(obj[key]);
+                    }
                 }
             }
             obj = Object.getPrototypeOf(obj);
