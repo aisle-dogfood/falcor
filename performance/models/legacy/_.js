@@ -316,12 +316,12 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.index = 0 : 0)];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                     }
                 }
                 if (key == null) {
@@ -550,12 +550,12 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.index = 0 : 0)];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                     }
                 }
                 original[original.length = column] = key;
@@ -650,7 +650,7 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
         path: [],
         optimized: []
     });
-    index = paths.index || (paths.index = 0);
+    index = Object.prototype.hasOwnProperty.call(paths, 'index') ? paths.index : (Object.prototype.hasOwnProperty.call(paths, 'constructor') && paths.constructor === Object ? paths.index = 0 : 0);
     length = paths.length;
     batchedPathMap = paths.batchedPathMap;
     messageCache = paths.value;
@@ -711,12 +711,12 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.index = 0 : 0)];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                             }
                         }
                         if (key == null) {
@@ -2050,12 +2050,12 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.index = 0 : 0)];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                         }
                     }
                     if (key == null) {
@@ -2936,12 +2936,12 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.index = 0 : 0)];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                             }
                         }
                         if (key == null) {
@@ -4739,12 +4739,12 @@ function invalidatePath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.index = 0 : 0)];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                     }
                 }
                 if (key == null) {
@@ -4922,12 +4922,12 @@ function invalidatePath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.index = 0 : 0)];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.offset = key.from || (Object.prototype.hasOwnProperty.call(key, 'constructor') && key.constructor === Object ? key.from = 0 : 0) : 0) || key.offset;
                     }
                 }
                 if (key != null) {
