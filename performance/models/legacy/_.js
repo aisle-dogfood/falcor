@@ -5427,12 +5427,33 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                if (Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    key = key[key.index];
+                                } else {
+                                    key.index = 0;
+                                    key = key[0];
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (key.offset === void 0) {
+                                        if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.offset = key.from;
+                                        } else {
+                                            key.from = 0;
+                                            key.offset = 0;
+                                        }
+                                    }
+                                    key = key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (key.offset === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.offset = key.from;
+                                    } else {
+                                        key.from = 0;
+                                        key.offset = 0;
+                                    }
+                                }
+                                key = key.offset;
                             }
                         }
                         if (key == null) {
@@ -5450,12 +5471,33 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                if (Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    key = key[key.index];
+                                } else {
+                                    key.index = 0;
+                                    key = key[0];
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (key.offset === void 0) {
+                                        if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.offset = key.from;
+                                        } else {
+                                            key.from = 0;
+                                            key.offset = 0;
+                                        }
+                                    }
+                                    key = key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (key.offset === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.offset = key.from;
+                                    } else {
+                                        key.from = 0;
+                                        key.offset = 0;
+                                    }
+                                }
+                                key = key.offset;
                             }
                         }
                         if (key != null) {
@@ -5479,7 +5521,8 @@ function pathMapWithObserver(paths_, observer_, parent) {
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
                         if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
@@ -5527,12 +5570,33 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                if (Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    key = key[key.index];
+                                } else {
+                                    key.index = 0;
+                                    key = key[0];
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (key.offset === void 0) {
+                                        if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.offset = key.from;
+                                        } else {
+                                            key.from = 0;
+                                            key.offset = 0;
+                                        }
+                                    }
+                                    key = key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (key.offset === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.offset = key.from;
+                                    } else {
+                                        key.from = 0;
+                                        key.offset = 0;
+                                    }
+                                }
+                                key = key.offset;
                             }
                         }
                         if (key == null) {
@@ -5552,12 +5616,33 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                if (Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    key = key[key.index];
+                                } else {
+                                    key.index = 0;
+                                    key = key[0];
+                                }
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (key.offset === void 0) {
+                                        if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.offset = key.from;
+                                        } else {
+                                            key.from = 0;
+                                            key.offset = 0;
+                                        }
+                                    }
+                                    key = key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (key.offset === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.offset = key.from;
+                                    } else {
+                                        key.from = 0;
+                                        key.offset = 0;
+                                    }
+                                }
+                                key = key.offset;
                             }
                         }
                         if (key != null) {
@@ -5583,7 +5668,8 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
                         if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
