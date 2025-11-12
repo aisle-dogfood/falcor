@@ -1278,12 +1278,32 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
-                        if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution by checking if the object is safe to modify
+                        if (key.constructor === Array && Object.prototype.hasOwnProperty.call(key, 'constructor')) {
+                            key = key[key.index || (key.index = 0)];
+                            if (key != null && typeof key === 'object') {
+                                // Prevent prototype pollution for nested objects
+                                if (key.constructor === Object && Object.prototype.hasOwnProperty.call(key, 'constructor')) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                } else {
+                                    key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                                }
+                            }
+                        } else {
+                            // Safe fallback - don't modify potentially unsafe objects
+                            key = key[key.index !== void 0 ? key.index : 0];
+                            if (key != null && typeof key === 'object') {
+                                key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                            }
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution for non-array objects
+                        if (key.constructor === Object && Object.prototype.hasOwnProperty.call(key, 'constructor')) {
+                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        } else {
+                            // Safe fallback - don't modify potentially unsafe objects
+                            key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                        }
                     }
                 }
                 if (key == null) {
