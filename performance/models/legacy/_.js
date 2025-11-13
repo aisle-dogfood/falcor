@@ -6002,7 +6002,10 @@ function serialize(cache) {
     return message;
 
     function internalKeys(x) {
-        return x[0] !== '_' || x[1] !== '_';
+        return (x[0] !== '_' || x[1] !== '_') && 
+               x !== '__proto__' && 
+               x !== 'constructor' && 
+               x !== 'prototype';
     }
 }
 
@@ -6040,7 +6043,11 @@ function deserialize(cache) {
     return this;
 
     function internalKeys(x) {
-        return x[0] !== '$' && (x[0] !== '_' || x[1] !== '_');
+        return x[0] !== '$' && 
+               (x[0] !== '_' || x[1] !== '_') && 
+               x !== '__proto__' && 
+               x !== 'constructor' && 
+               x !== 'prototype';
     }
 }
 
@@ -6065,7 +6072,10 @@ function flatten(obj) {
             keys.sort();
             for (keyCount = 0; keyCount < keys.length; keyCount++) {
                 key = keys[keyCount];
-                if (key[0] !== '_' || key[1] !== '_') {
+                if ((key[0] !== '_' || key[1] !== '_') && 
+                    key !== '__proto__' && 
+                    key !== 'constructor' && 
+                    key !== 'prototype') {
                     flattenedObject[key] = flatten(obj[key]);
                 }
             }
