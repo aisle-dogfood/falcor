@@ -132,6 +132,9 @@ Create an `index.html` file with the following contents:
         <script src="https://netflix.github.io/falcor/build/falcor.browser.js"></script>
         <!-- For production use. -->
         <!-- <script src="https://cdn.jsdelivr.net/falcor/{VERSION}/falcor.browser.min.js"></script> -->
+    </head>
+    <body>
+        <div id="greeting"></div>
         <script>
             var model = falcor({
                 source: new falcor.HttpDataSource("/model.json"),
@@ -139,11 +142,11 @@ Create an `index.html` file with the following contents:
 
             // retrieve the "greeting" key from the root of the Virtual JSON resource
             model.get("greeting").then(function (response) {
-                document.write(response.json.greeting);
+                const el = document.getElementById('greeting');
+                el.textContent = String(response.json.greeting || '');
             });
         </script>
-    </head>
-    <body></body>
+    </body>
 </html>
 ```
 
