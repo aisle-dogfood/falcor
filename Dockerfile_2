@@ -1,0 +1,31 @@
+FROM public.ecr.aws/docker/library/node:16-alpine
+
+WORKDIR /app
+
+# Copy package files first to leverage Docker caching
+COPY package*.json ./
+
+# Create .npmrc to ensure we only use the public registry
+RUN echo "registry=https://registry.npmjs.org/" > .npmrc
+
+# Install dependencies using the public registry only and ignore peer dependency conflicts
+RUN npm install --no-package-lock --legacy-peer-deps
+
+# Copy the rest of the project files
+COPY . .
+
+# Create a non-root user and set proper permissions
+RUN adduser -D app && \
+    chown -R app:app /app
+
+# Switch to non-root user
+USER app
+
+# Set PATH to include user's local bin
+ENV PATH="$HOME/.local/bin:$PATH"
+
+# Set PATH to include user's local bin
+ENV PATH="$HOME/.local/bin:$PATH"
+
+# Set PATH to include node_modules/.bin
+ENV PATH="/app/node_modules/.bin:$PATH"
