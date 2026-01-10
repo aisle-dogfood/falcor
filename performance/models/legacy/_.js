@@ -2947,6 +2947,10 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         if (key == null) {
                             continue;
                         }
+                        // Prevent prototype pollution
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         original[original.length = column] = key;
                         optimized[optimized.length = column + offset] = key;
                         context = contextParent[key];
