@@ -1232,6 +1232,18 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
     }
 }
 
+// Helper function to safely assign properties to objects, preventing prototype pollution
+function safeAssign(obj, prop, value) {
+    // Check if object is safe to modify (not a prototype and has Object constructor)
+    if (obj != null && typeof obj === 'object' && 
+        obj.constructor === Object && 
+        obj !== Object.prototype &&
+        !Object.prototype.isPrototypeOf.call(Object.prototype, obj)) {
+        obj[prop] = value;
+    }
+    return obj[prop];
+}
+
 function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
     var self = this,
         root = self._root,
@@ -1278,12 +1290,12 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        key = key[key.index || safeAssign(key, 'index', 0)];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            key = key.offset === void 0 && (safeAssign(key, 'offset', key.from || safeAssign(key, 'from', 0))) || key.offset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        key = key.offset === void 0 && (safeAssign(key, 'offset', key.from || safeAssign(key, 'from', 0))) || key.offset;
                     }
                 }
                 if (key == null) {
