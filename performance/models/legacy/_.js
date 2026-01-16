@@ -4102,12 +4102,18 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by reading properties without modifying the key object
+                                var keyIndex = key.index != null ? key.index : 0;
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Read offset or from without side effects
+                                    var keyOffset = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Read offset or from without side effects
+                                var keyOffset = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                                key = keyOffset;
                             }
                         }
                         original[original.length = column] = key;
