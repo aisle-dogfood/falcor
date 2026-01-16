@@ -5438,6 +5438,10 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         if (key == null) {
                             continue;
                         }
+                        // Prototype pollution protection
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         observers = (context = contextParent[key] || (contextParent[key] = {
                             __observers: []
                         })).__observers;
@@ -5459,12 +5463,17 @@ function pathMapWithObserver(paths_, observer_, parent) {
                             }
                         }
                         if (key != null) {
-                            observers = (context = contextParent[key] || (contextParent[key] = {
-                                __observers: []
-                            })).__observers;
-                            if (observer && observers.indexOf(observer) === -1) {
-                                observers[observers.length] = observer;
-                                observer.count = (observer.count || 0) + 1;
+                            // Prototype pollution protection
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                // Skip dangerous keys that could pollute the prototype
+                            } else {
+                                observers = (context = contextParent[key] || (contextParent[key] = {
+                                    __observers: []
+                                })).__observers;
+                                if (observer && observers.indexOf(observer) === -1) {
+                                    observers[observers.length] = observer;
+                                    observer.count = (observer.count || 0) + 1;
+                                }
                             }
                         }
                     }
