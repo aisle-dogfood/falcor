@@ -5400,6 +5400,12 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
     return Disposable.empty;
 }
 
+// Helper function to check if a key is safe to use for property access
+// Prevents prototype pollution attacks
+function isSafeKey(key) {
+    return key !== '__proto__' && key !== 'constructor' && key !== 'prototype';
+}
+
 function pathMapWithObserver(paths_, observer_, parent) {
     var self = this,
         root = self._root,
@@ -5438,6 +5444,10 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         if (key == null) {
                             continue;
                         }
+                        // Check if key is safe to prevent prototype pollution
+                        if (!isSafeKey(key)) {
+                            continue;
+                        }
                         observers = (context = contextParent[key] || (contextParent[key] = {
                             __observers: []
                         })).__observers;
@@ -5459,6 +5469,10 @@ function pathMapWithObserver(paths_, observer_, parent) {
                             }
                         }
                         if (key != null) {
+                            // Check if key is safe to prevent prototype pollution
+                            if (!isSafeKey(key)) {
+                                continue building_pathmap;
+                            }
                             observers = (context = contextParent[key] || (contextParent[key] = {
                                 __observers: []
                             })).__observers;
@@ -5538,6 +5552,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         if (key == null) {
                             continue;
                         }
+                        // Check if key is safe to prevent prototype pollution
+                        if (!isSafeKey(key)) {
+                            continue;
+                        }
                         observers = (context = contextParent[key]).__observers;
                         if (observer != null) {
                             var a$2, i$2;
@@ -5561,6 +5579,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                             }
                         }
                         if (key != null) {
+                            // Check if key is safe to prevent prototype pollution
+                            if (!isSafeKey(key)) {
+                                continue building_pathmap;
+                            }
                             observers = (context = contextParent[key]).__observers;
                             if (observer != null) {
                                 var a$3, i$3;
