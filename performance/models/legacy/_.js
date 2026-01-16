@@ -327,6 +327,10 @@ function getPath(path_, cache, parent, bound) {
                 if (key == null) {
                     continue;
                 }
+                // Prevent prototype pollution
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
                 original[original.length = column] = key;
                 optimized[optimized.length = column + offset] = key;
                 context = (context = contextParent[key]) && (!((contextExpires = context['$expires']) == null || contextExpires === 1 || contextExpires !== 0 && contextExpires > Date.now()) ? void 0 : context);
@@ -374,6 +378,10 @@ function getPath(path_, cache, parent, bound) {
                                 for (; column < last; ++column) {
                                     key = path[column];
                                     if (key == null) {
+                                        continue;
+                                    }
+                                    // Prevent prototype pollution
+                                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                         continue;
                                     }
                                     optimized[optimized.length = column + offset] = key;
@@ -722,6 +730,10 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         if (key == null) {
                             continue;
                         }
+                        // Prevent prototype pollution
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         original[original.length = column] = key;
                         optimized[optimized.length = column + offset] = key;
                         context = (context = contextParent[key]) && (!((contextExpires = context['$expires']) == null || contextExpires === 1 || contextExpires !== 0 && contextExpires > Date.now()) ? void 0 : context);
@@ -770,6 +782,10 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                                         for (; column < last; ++column) {
                                             key = path[column];
                                             if (key == null) {
+                                                continue;
+                                            }
+                                            // Prevent prototype pollution
+                                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                                 continue;
                                             }
                                             optimized[optimized.length = column + offset] = key;
@@ -1289,6 +1305,10 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 if (key == null) {
                     continue;
                 }
+                // Prevent prototype pollution
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
                 original[original.length = column] = key;
                 optimized[optimized.length = column + offset] = key;
                 if ( // Put the message in the cache and migrate generation if needed.
@@ -1352,6 +1372,10 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                                 for (; column < last; ++column) {
                                     key = path[column];
                                     if (key == null) {
+                                        continue;
+                                    }
+                                    // Prevent prototype pollution
+                                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                         continue;
                                     }
                                     context = contextParent[key];
@@ -2061,6 +2085,10 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     if (key == null) {
                         continue;
                     }
+                    // Prevent prototype pollution
+                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                        continue;
+                    }
                     original[original.length = column] = key;
                     optimized[optimized.length = column + offset] = key;
                     if ( // Put the message in the cache and migrate generation if needed.
@@ -2124,6 +2152,10 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                                     for (; column < last; ++column) {
                                         key = path[column];
                                         if (key == null) {
+                                            continue;
+                                        }
+                                        // Prevent prototype pollution
+                                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                             continue;
                                         }
                                         optimized[optimized.length = column + offset] = key;
@@ -2208,6 +2240,10 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                                     if (column === last) {
                                         key = path[column];
                                         if (key != null) {
+                                            // Prevent prototype pollution
+                                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                                break setting_path;
+                                            }
                                             optimized[optimized.length = column + offset] = key;
                                             if ( // Put the message in the cache and migrate generation if needed.
                                                 context && (contextParent[key] || {
@@ -2947,6 +2983,10 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         if (key == null) {
                             continue;
                         }
+                        // Prevent prototype pollution
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         original[original.length = column] = key;
                         optimized[optimized.length = column + offset] = key;
                         context = contextParent[key];
@@ -3306,6 +3346,10 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                     for (; column < last; ++column) {
                                         key = path[column];
                                         if (key == null) {
+                                            continue;
+                                        }
+                                        // Prevent prototype pollution
+                                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                             continue;
                                         }
                                         optimized[optimized.length = column + offset] = key;
@@ -3684,6 +3728,10 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                     if (column === last) {
                                         key = path[column];
                                         if (key != null) {
+                                            // Prevent prototype pollution
+                                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                                break setting_pbf;
+                                            }
                                             optimized[optimized.length = column + offset] = key;
                                             context = contextParent[key];
                                             message = messageParent && messageParent[key];
@@ -4112,6 +4160,10 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         }
                         original[original.length = column] = key;
                         if (key != null) {
+                            // Prevent prototype pollution
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                break setting_pbf;
+                            }
                             optimized[optimized.length = column + offset] = key;
                             context = contextParent[key];
                             message = messageParent && messageParent[key];
@@ -4750,6 +4802,10 @@ function invalidatePath(path_, cache, parent, bound) {
                 if (key == null) {
                     continue;
                 }
+                // Prevent prototype pollution
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
                 context = (context = contextParent[key]) && (!((contextExpires = context['$expires']) == null || contextExpires === 1 || contextExpires !== 0 && contextExpires > Date.now()) ? void 0 : context);
                 while (Array.isArray(contextValue = (contextType // If the context is a sentinel, get its value.
                     // Otherwise, set contextValue to the context.
@@ -4789,6 +4845,10 @@ function invalidatePath(path_, cache, parent, bound) {
                                 for (; column < last; ++column) {
                                     key = path[column];
                                     if (key == null) {
+                                        continue;
+                                    }
+                                    // Prevent prototype pollution
+                                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                         continue;
                                     }
                                     context = (context = contextParent[key]) && (!((contextExpires = context['$expires']) == null || contextExpires === 1 || contextExpires !== 0 && contextExpires > Date.now()) ? void 0 : context);
@@ -5102,6 +5162,10 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                         if (key == null) {
                             continue;
                         }
+                        // Prevent prototype pollution
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         context = (context = contextParent[key]) && (!((contextExpires = context['$expires']) == null || contextExpires === 1 || contextExpires !== 0 && contextExpires > Date.now()) ? void 0 : context);
                         while (Array.isArray(contextValue = (contextType // If the context is a sentinel, get its value.
                             // Otherwise, set contextValue to the context.
@@ -5141,6 +5205,10 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                                         for (; column < last; ++column) {
                                             key = path[column];
                                             if (key == null) {
+                                                continue;
+                                            }
+                                            // Prevent prototype pollution
+                                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                                 continue;
                                             }
                                             context = (context = contextParent[key]) && (!((contextExpires = context['$expires']) == null || contextExpires === 1 || contextExpires !== 0 && contextExpires > Date.now()) ? void 0 : context);
@@ -5438,6 +5506,10 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         if (key == null) {
                             continue;
                         }
+                        // Prevent prototype pollution
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         observers = (context = contextParent[key] || (contextParent[key] = {
                             __observers: []
                         })).__observers;
@@ -5459,6 +5531,10 @@ function pathMapWithObserver(paths_, observer_, parent) {
                             }
                         }
                         if (key != null) {
+                            // Prevent prototype pollution
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                break building_pathmap;
+                            }
                             observers = (context = contextParent[key] || (contextParent[key] = {
                                 __observers: []
                             })).__observers;
@@ -5538,6 +5614,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         if (key == null) {
                             continue;
                         }
+                        // Prevent prototype pollution
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         observers = (context = contextParent[key]).__observers;
                         if (observer != null) {
                             var a$2, i$2;
@@ -5561,6 +5641,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                             }
                         }
                         if (key != null) {
+                            // Prevent prototype pollution
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                break building_pathmap;
+                            }
                             observers = (context = contextParent[key]).__observers;
                             if (observer != null) {
                                 var a$3, i$3;
@@ -6002,7 +6086,8 @@ function serialize(cache) {
     return message;
 
     function internalKeys(x) {
-        return x[0] !== '_' || x[1] !== '_';
+        // Filter out internal keys and dangerous prototype-polluting keys
+        return (x[0] !== '_' || x[1] !== '_') && x !== 'constructor' && x !== 'prototype' && x !== '__proto__';
     }
 }
 
@@ -6040,7 +6125,8 @@ function deserialize(cache) {
     return this;
 
     function internalKeys(x) {
-        return x[0] !== '$' && (x[0] !== '_' || x[1] !== '_');
+        // Filter out internal keys and dangerous prototype-polluting keys
+        return x[0] !== '$' && (x[0] !== '_' || x[1] !== '_') && x !== 'constructor' && x !== 'prototype' && x !== '__proto__';
     }
 }
 
