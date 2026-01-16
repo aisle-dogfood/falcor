@@ -1015,7 +1015,7 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                     error = Array.isArray(pbv) ? [] : pbv != null && typeof pbv === 'object' ? {} : pbv;
                     var val, dst;
                     for (var key$2 in pbv) {
-                        if (pbv.hasOwnProperty(key$2)) {
+                        if (pbv.hasOwnProperty(key$2) && key$2 !== '__proto__' && key$2 !== 'constructor' && key$2 !== 'prototype') {
                             val = dst = pbv[key$2];
                             if (Array.isArray(val)) {
                                 var i$5 = -1,
@@ -1035,7 +1035,7 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                     x = Array.isArray(pbv) ? [] : pbv != null && typeof pbv === 'object' ? {} : pbv;
                     var val$2, dst$2;
                     for (var key$3 in pbv) {
-                        if (pbv.hasOwnProperty(key$3)) {
+                        if (pbv.hasOwnProperty(key$3) && key$3 !== '__proto__' && key$3 !== 'constructor' && key$3 !== 'prototype') {
                             val$2 = dst$2 = pbv[key$3];
                             if (Array.isArray(val$2)) {
                                 var i$6 = -1,
@@ -2670,7 +2670,7 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
             error = Array.isArray(pbv) ? [] : pbv != null && typeof pbv === 'object' ? {} : pbv;
             var val, dst;
             for (var key$2 in pbv) {
-                if (pbv.hasOwnProperty(key$2)) {
+                if (pbv.hasOwnProperty(key$2) && key$2 !== '__proto__' && key$2 !== 'constructor' && key$2 !== 'prototype') {
                     val = dst = pbv[key$2];
                     if (Array.isArray(val)) {
                         var i$9 = -1,
@@ -2693,7 +2693,7 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
             x = Array.isArray(pbv) ? [] : pbv != null && typeof pbv === 'object' ? {} : pbv;
             var val$2, dst$2;
             for (var key$3 in pbv) {
-                if (pbv.hasOwnProperty(key$3)) {
+                if (pbv.hasOwnProperty(key$3) && key$3 !== '__proto__' && key$3 !== 'constructor' && key$3 !== 'prototype') {
                     val$2 = dst$2 = pbv[key$3];
                     if (Array.isArray(val$2)) {
                         var i$10 = -1,
@@ -4468,7 +4468,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         y = Array.isArray(pbv) ? [] : pbv != null && typeof pbv === 'object' ? {} : pbv;
                         var val, dst;
                         for (var key$3 in pbv) {
-                            if (pbv.hasOwnProperty(key$3)) {
+                            if (pbv.hasOwnProperty(key$3) && key$3 !== '__proto__' && key$3 !== 'constructor' && key$3 !== 'prototype') {
                                 val = dst = pbv[key$3];
                                 if (Array.isArray(val)) {
                                     var i$23 = -1,
@@ -4486,7 +4486,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         z = Array.isArray(contextValue) ? [] : contextValue != null && typeof contextValue === 'object' ? {} : contextValue;
                         var val$2, dst$2;
                         for (var key$4 in contextValue) {
-                            if (contextValue.hasOwnProperty(key$4) && key$4[0] !== '_') {
+                            if (contextValue.hasOwnProperty(key$4) && key$4[0] !== '_' && key$4 !== '__proto__' && key$4 !== 'constructor' && key$4 !== 'prototype') {
                                 val$2 = dst$2 = contextValue[key$4];
                                 if (Array.isArray(val$2)) {
                                     var i$24 = -1,
@@ -4530,7 +4530,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                             y$2 = Array.isArray(pbv) ? [] : pbv != null && typeof pbv === 'object' ? {} : pbv;
                             var val$3, dst$3;
                             for (var key$6 in pbv) {
-                                if (pbv.hasOwnProperty(key$6)) {
+                                if (pbv.hasOwnProperty(key$6) && key$6 !== '__proto__' && key$6 !== 'constructor' && key$6 !== 'prototype') {
                                     val$3 = dst$3 = pbv[key$6];
                                     if (Array.isArray(val$3)) {
                                         var i$26 = -1,
@@ -6167,23 +6167,25 @@ function buildQueries(root) {
     }
     results = [];
     for (x in memo) {
-        head = (list = memo[x]).head;
-        tail = list.tail;
-        i = -1;
-        n = tail.length;
-        while (++i < n) {
-            list = tail[i];
-            j = -1;
-            k = list.length;
-            if (head[0] === '') {
-                clone = [];
-            } else {
-                clone = [head.length === 1 ? head[0] : head];
-                while (++j < k) {
-                    clone[j + 1] = list[j];
+        if (memo.hasOwnProperty(x) && x !== '__proto__' && x !== 'constructor' && x !== 'prototype') {
+            head = (list = memo[x]).head;
+            tail = list.tail;
+            i = -1;
+            n = tail.length;
+            while (++i < n) {
+                list = tail[i];
+                j = -1;
+                k = list.length;
+                if (head[0] === '') {
+                    clone = [];
+                } else {
+                    clone = [head.length === 1 ? head[0] : head];
+                    while (++j < k) {
+                        clone[j + 1] = list[j];
+                    }
                 }
+                results[results.length] = clone;
             }
-            results[results.length] = clone;
         }
     }
     return results;
