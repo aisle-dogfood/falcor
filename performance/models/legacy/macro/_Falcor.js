@@ -474,6 +474,10 @@ function buildQueries(root) {
     memo = {};
     while(++i < n) {
         child = children[i];
+        // Skip prototype pollution vectors
+        if (child === '__proto__' || child === 'constructor' || child === 'prototype') {
+            continue;
+        }
         paths = buildQueries(root[child]);
         key = createKey(paths);
 
@@ -517,7 +521,10 @@ function notPathMapInternalKeys(key) {
     return (
         key !== "__observers" &&
         key !== "__pending" &&
-        key !== "__batchID"
+        key !== "__batchID" &&
+        key !== "__proto__" &&
+        key !== "constructor" &&
+        key !== "prototype"
         );
 }
 
