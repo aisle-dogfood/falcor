@@ -2036,7 +2036,8 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
         pbv = pbvs[index];
         path = pbv.path;
         message = pbv.value;
-        column = path.index || (path.index = 0);
+        // Prevent prototype pollution by checking if path has own property 'index'
+        column = Object.prototype.hasOwnProperty.call(path, 'index') ? path.index : (path.index = 0);
         offset = 0;
         last = path.length - 1;
         contextParent = boundContext;
@@ -2050,15 +2051,22 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            // Prevent prototype pollution by checking if key has own property 'index'
+                            key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (key.index = 0)];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by checking own properties
+                                key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : (key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (key.from = 0))) || key.offset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by checking own properties
+                            key = key.offset === void 0 && (Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : (key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (key.from = 0))) || key.offset;
                         }
                     }
                     if (key == null) {
+                        continue;
+                    }
+                    // Prevent prototype pollution by checking if key is a dangerous property name
+                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                         continue;
                     }
                     original[original.length = column] = key;
