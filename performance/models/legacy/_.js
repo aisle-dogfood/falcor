@@ -5404,6 +5404,13 @@ function pathMapWithObserver(paths_, observer_, parent) {
     var self = this,
         root = self._root,
         connected, materialized, streaming, refreshing, contexts, messages, error, errors, observer, observers, expired, paths, path, key, column, offset, last, index, length, sizeOffset, boundOptimized, original, optimized, pbv, originalMiss, originalMisses, optimizedMiss, optimizedMisses, refs, cols, crossed, depth, batchedOptimizedPathMap, batchedPathMap, batchedPathMaps, contextCache, contextParent, context, contextValue, contextType, contextSize, contextExpires, contextTimestamp, boundContext, messageCache, messageParent, message, messageValue, messageType, messageSize, messageExpires, messageTimestamp;
+    // Helper to check if an object is safe to mutate (not a prototype)
+    function isSafeToMutate(obj) {
+        return obj !== Object.prototype && 
+               obj !== Array.prototype && 
+               obj !== Function.prototype &&
+               (!obj.constructor || obj.constructor.prototype !== obj);
+    }
     observer = observer_;
     paths = paths_;
     index = 0;
@@ -5427,12 +5434,12 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (isSafeToMutate(key) ? (key.index = 0) : 0)];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset === void 0 && (isSafeToMutate(key) ? (key.offset = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (isSafeToMutate(key) ? (key.from = 0) : 0))) : 0) || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (isSafeToMutate(key) ? (key.offset = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (isSafeToMutate(key) ? (key.from = 0) : 0))) : 0) || key.offset;
                             }
                         }
                         if (key == null) {
@@ -5450,12 +5457,12 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (isSafeToMutate(key) ? (key.index = 0) : 0)];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset === void 0 && (isSafeToMutate(key) ? (key.offset = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (isSafeToMutate(key) ? (key.from = 0) : 0))) : 0) || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (isSafeToMutate(key) ? (key.offset = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (isSafeToMutate(key) ? (key.from = 0) : 0))) : 0) || key.offset;
                             }
                         }
                         if (key != null) {
@@ -5478,8 +5485,9 @@ function pathMapWithObserver(paths_, observer_, parent) {
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                        if (isSafeToMutate(key) && ++key.index === key.length) {
+                            if (isSafeToMutate(key)) key.index = 0;
+                            key = key[key.index];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
@@ -5487,9 +5495,11 @@ function pathMapWithObserver(paths_, observer_, parent) {
                             break ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    if (isSafeToMutate(key)) {
+                        if (++key.offset > (Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : (isSafeToMutate(key) ? (key.to = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0) + ((Object.prototype.hasOwnProperty.call(key, 'length') ? key.length : 1)) - 1) : 0))) {
+                            key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            continue ascending;
+                        }
                     }
                     break ascending;
                 }
@@ -5502,6 +5512,13 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
     var self = this,
         root = self._root,
         connected, materialized, streaming, refreshing, contexts, messages, error, errors, observer, observers, expired, paths, path, key, column, offset, last, index, length, sizeOffset, boundOptimized, original, optimized, pbv, originalMiss, originalMisses, optimizedMiss, optimizedMisses, refs, cols, crossed, depth, batchedOptimizedPathMap, batchedPathMap, batchedPathMaps, contextCache, contextParent, context, contextValue, contextType, contextSize, contextExpires, contextTimestamp, boundContext, messageCache, messageParent, message, messageValue, messageType, messageSize, messageExpires, messageTimestamp;
+    // Helper to check if an object is safe to mutate (not a prototype)
+    function isSafeToMutate(obj) {
+        return obj !== Object.prototype && 
+               obj !== Array.prototype && 
+               obj !== Function.prototype &&
+               (!obj.constructor || obj.constructor.prototype !== obj);
+    }
     observer = observer_;
     paths = paths_;
     index = 0;
@@ -5527,12 +5544,12 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (isSafeToMutate(key) ? (key.index = 0) : 0)];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset === void 0 && (isSafeToMutate(key) ? (key.offset = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (isSafeToMutate(key) ? (key.from = 0) : 0))) : 0) || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (isSafeToMutate(key) ? (key.offset = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (isSafeToMutate(key) ? (key.from = 0) : 0))) : 0) || key.offset;
                             }
                         }
                         if (key == null) {
@@ -5552,12 +5569,12 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (isSafeToMutate(key) ? (key.index = 0) : 0)];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset === void 0 && (isSafeToMutate(key) ? (key.offset = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (isSafeToMutate(key) ? (key.from = 0) : 0))) : 0) || key.offset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset === void 0 && (isSafeToMutate(key) ? (key.offset = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (isSafeToMutate(key) ? (key.from = 0) : 0))) : 0) || key.offset;
                             }
                         }
                         if (key != null) {
@@ -5582,8 +5599,9 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                        if (isSafeToMutate(key) && ++key.index === key.length) {
+                            if (isSafeToMutate(key)) key.index = 0;
+                            key = key[key.index];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
@@ -5591,9 +5609,11 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                             break ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    if (isSafeToMutate(key)) {
+                        if (++key.offset > (Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : (isSafeToMutate(key) ? (key.to = (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0) + ((Object.prototype.hasOwnProperty.call(key, 'length') ? key.length : 1)) - 1) : 0))) {
+                            key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            continue ascending;
+                        }
                     }
                     break ascending;
                 }
