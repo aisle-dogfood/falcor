@@ -2936,12 +2936,26 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by checking hasOwnProperty
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (key.index = 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution: check hasOwnProperty before assignment
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        key = key.offset;
+                                    } else {
+                                        var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (key.from = 0);
+                                        key = key.offset = keyFrom;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution: check hasOwnProperty before assignment
+                                if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key = key.offset;
+                                } else {
+                                    var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (key.from = 0);
+                                    key = key.offset = keyFrom;
+                                }
                             }
                         }
                         if (key == null) {
@@ -4102,12 +4116,26 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by checking hasOwnProperty
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : (key.index = 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution: check hasOwnProperty before assignment
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        key = key.offset;
+                                    } else {
+                                        var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (key.from = 0);
+                                        key = key.offset = keyFrom;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution: check hasOwnProperty before assignment
+                                if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    key = key.offset;
+                                } else {
+                                    var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : (key.from = 0);
+                                    key = key.offset = keyFrom;
+                                }
                             }
                         }
                         original[original.length = column] = key;
