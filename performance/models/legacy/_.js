@@ -1289,6 +1289,9 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 if (key == null) {
                     continue;
                 }
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
                 original[original.length = column] = key;
                 optimized[optimized.length = column + offset] = key;
                 if ( // Put the message in the cache and migrate generation if needed.
@@ -1420,6 +1423,9 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                                 if (column === last) {
                                     key = path[column];
                                     if (key != null) {
+                                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                            break setting_path;
+                                        }
                                         optimized[optimized.length = column + offset] = key;
                                         if ( // Put the message in the cache and migrate generation if needed.
                                             context && (contextParent[key] || {
@@ -1554,6 +1560,9 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 }
                 original[original.length = column] = key;
                 if (key != null) {
+                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                        break setting_path;
+                    }
                     optimized[optimized.length = column + offset] = key;
                     context = contextParent[key];
                     var sizeOffset$2 = 0;
@@ -2061,6 +2070,9 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     if (key == null) {
                         continue;
                     }
+                    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                        continue;
+                    }
                     original[original.length = column] = key;
                     optimized[optimized.length = column + offset] = key;
                     if ( // Put the message in the cache and migrate generation if needed.
@@ -2124,6 +2136,9 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                                     for (; column < last; ++column) {
                                         key = path[column];
                                         if (key == null) {
+                                            continue;
+                                        }
+                                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                             continue;
                                         }
                                         optimized[optimized.length = column + offset] = key;
@@ -2208,6 +2223,9 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                                     if (column === last) {
                                         key = path[column];
                                         if (key != null) {
+                                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                                break setting_path;
+                                            }
                                             optimized[optimized.length = column + offset] = key;
                                             if ( // Put the message in the cache and migrate generation if needed.
                                                 context && (contextParent[key] || {
@@ -2342,6 +2360,9 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     }
                     original[original.length = column] = key;
                     if (key != null) {
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            break setting_path;
+                        }
                         optimized[optimized.length = column + offset] = key;
                         context = contextParent[key];
                         var sizeOffset$2 = 0;
@@ -2945,6 +2966,9 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                             }
                         }
                         if (key == null) {
+                            continue;
+                        }
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
                             continue;
                         }
                         original[original.length = column] = key;
@@ -5438,6 +5462,9 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         if (key == null) {
                             continue;
                         }
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         observers = (context = contextParent[key] || (contextParent[key] = {
                             __observers: []
                         })).__observers;
@@ -5459,6 +5486,9 @@ function pathMapWithObserver(paths_, observer_, parent) {
                             }
                         }
                         if (key != null) {
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                continue;
+                            }
                             observers = (context = contextParent[key] || (contextParent[key] = {
                                 __observers: []
                             })).__observers;
@@ -5982,6 +6012,9 @@ function serialize(cache) {
             message = frame.message;
             keys = frame.keys;
             while ((key = keys.pop()) != null) {
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
                 context = context[key];
                 if (context == null || typeof context !== 'object') {
                     message[key] = context;
