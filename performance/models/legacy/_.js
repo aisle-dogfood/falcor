@@ -10,6 +10,17 @@ var Observable = Rx.Observable,
     µSize = 0.25,
     MIN_SAFE_INTEGER = -Math.pow(2, 53) - 1;
 
+// Helper function to check if an object is safe to modify (not a prototype)
+function isSafeToModify(obj) {
+    if (obj == null || typeof obj !== 'object') {
+        return false;
+    }
+    // Check if the object is Object.prototype, Array.prototype, or Function.prototype
+    return obj !== Object.prototype && 
+           obj !== Array.prototype && 
+           obj !== Function.prototype;
+}
+
 function PathEvaluator(maxSize, collectRatio, loader, cache, path, now, errorSelector) {
     if (loader != null && typeof loader === 'object') {
         this.loader = loader;
@@ -5526,6 +5537,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                     for (; column < last; ++column) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
+                            // Prevent prototype pollution
+                            if (!isSafeToModify(key)) {
+                                continue;
+                            }
                             if (Array.isArray(key)) {
                                 key = key[key.index || (key.index = 0)];
                                 if (key != null && typeof key === 'object') {
@@ -5551,6 +5566,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                     if (column === last) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
+                            // Prevent prototype pollution
+                            if (!isSafeToModify(key)) {
+                                break building_pathmap;
+                            }
                             if (Array.isArray(key)) {
                                 key = key[key.index || (key.index = 0)];
                                 if (key != null && typeof key === 'object') {
@@ -5578,6 +5597,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                 for (; column >= 0; --column) {
                     key = path[column];
                     if (key == null || typeof key !== 'object') {
+                        continue ascending;
+                    }
+                    // Prevent prototype pollution
+                    if (!isSafeToModify(key)) {
                         continue ascending;
                     }
                     if ( // TODO: replace this with a faster Array check.
