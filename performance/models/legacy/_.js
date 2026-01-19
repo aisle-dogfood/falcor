@@ -2123,7 +2123,7 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                                 while (true) {
                                     for (; column < last; ++column) {
                                         key = path[column];
-                                        if (key == null) {
+                                        if (key == null || key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                             continue;
                                         }
                                         optimized[optimized.length = column + offset] = key;
@@ -2207,7 +2207,7 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                                     }
                                     if (column === last) {
                                         key = path[column];
-                                        if (key != null) {
+                                        if (key != null && key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {
                                             optimized[optimized.length = column + offset] = key;
                                             if ( // Put the message in the cache and migrate generation if needed.
                                                 context && (contextParent[key] || {
@@ -2944,7 +2944,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                 key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
                             }
                         }
-                        if (key == null) {
+                        if (key == null || key === '__proto__' || key === 'constructor' || key === 'prototype') {
                             continue;
                         }
                         original[original.length = column] = key;
@@ -3305,7 +3305,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                 while (true) {
                                     for (; column < last; ++column) {
                                         key = path[column];
-                                        if (key == null) {
+                                        if (key == null || key === '__proto__' || key === 'constructor' || key === 'prototype') {
                                             continue;
                                         }
                                         optimized[optimized.length = column + offset] = key;
@@ -3683,7 +3683,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                     }
                                     if (column === last) {
                                         key = path[column];
-                                        if (key != null) {
+                                        if (key != null && key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {
                                             optimized[optimized.length = column + offset] = key;
                                             context = contextParent[key];
                                             message = messageParent && messageParent[key];
@@ -4111,7 +4111,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                             }
                         }
                         original[original.length = column] = key;
-                        if (key != null) {
+                        if (key != null && key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {
                             optimized[optimized.length = column + offset] = key;
                             context = contextParent[key];
                             message = messageParent && messageParent[key];
