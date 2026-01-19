@@ -4102,12 +4102,12 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                key = key[key.index != null ? key.index : 0];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
                             }
                         }
                         original[original.length = column] = key;
