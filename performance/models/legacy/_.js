@@ -5982,6 +5982,11 @@ function serialize(cache) {
             message = frame.message;
             keys = frame.keys;
             while ((key = keys.pop()) != null) {
+                // Skip prototype pollution vectors
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    context = frame.context;
+                    continue;
+                }
                 context = context[key];
                 if (context == null || typeof context !== 'object') {
                     message[key] = context;
@@ -6002,7 +6007,7 @@ function serialize(cache) {
     return message;
 
     function internalKeys(x) {
-        return x[0] !== '_' || x[1] !== '_';
+        return (x[0] !== '_' || x[1] !== '_') && x !== 'constructor' && x !== 'prototype';
     }
 }
 
@@ -6022,6 +6027,11 @@ function deserialize(cache) {
             keys = frame.keys;
             while ((key = keys.pop()) != null) {
                 path[depth] = key;
+                // Skip prototype pollution vectors
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    context = frame.context;
+                    continue;
+                }
                 context = context[key];
                 if (context == null || typeof context !== 'object' || context.$type !== void 0 || Array.isArray(context)) {
                     paths.push(path.slice(0, depth + 1));
@@ -6040,7 +6050,7 @@ function deserialize(cache) {
     return this;
 
     function internalKeys(x) {
-        return x[0] !== '$' && (x[0] !== '_' || x[1] !== '_');
+        return x[0] !== '$' && (x[0] !== '_' || x[1] !== '_') && x !== 'constructor' && x !== 'prototype';
     }
 }
 
@@ -6131,7 +6141,8 @@ function createKey(list) {
 }
 
 function notPathMapInternalKeys(key) {
-    return key !== '__observers' && key !== '__pending' && key !== '__batchID';
+    return key !== '__observers' && key !== '__pending' && key !== '__batchID' && 
+           key !== '__proto__' && key !== 'constructor' && key !== 'prototype';
 }
 /**
  * Builds the set of collapsed
@@ -6153,6 +6164,10 @@ function buildQueries(root) {
     memo = {};
     while (++i < n) {
         child = children[i];
+        // Skip prototype pollution vectors
+        if (child === '__proto__' || child === 'constructor' || child === 'prototype') {
+            continue;
+        }
         paths = buildQueries(root[child]);
         key = createKey(paths);
         childIsNum = typeof child === 'string' && !charPattern.test(child);
