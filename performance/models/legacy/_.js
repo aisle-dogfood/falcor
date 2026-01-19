@@ -5438,6 +5438,10 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         if (key == null) {
                             continue;
                         }
+                        // Prevent prototype pollution
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         observers = (context = contextParent[key] || (contextParent[key] = {
                             __observers: []
                         })).__observers;
@@ -5459,6 +5463,10 @@ function pathMapWithObserver(paths_, observer_, parent) {
                             }
                         }
                         if (key != null) {
+                            // Prevent prototype pollution
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                break building_pathmap;
+                            }
                             observers = (context = contextParent[key] || (contextParent[key] = {
                                 __observers: []
                             })).__observers;
@@ -5538,6 +5546,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         if (key == null) {
                             continue;
                         }
+                        // Prevent prototype pollution
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         observers = (context = contextParent[key]).__observers;
                         if (observer != null) {
                             var a$2, i$2;
@@ -5561,6 +5573,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                             }
                         }
                         if (key != null) {
+                            // Prevent prototype pollution
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                break building_pathmap;
+                            }
                             observers = (context = contextParent[key]).__observers;
                             if (observer != null) {
                                 var a$3, i$3;
