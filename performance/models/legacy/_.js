@@ -316,12 +316,20 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                           (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                       (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -550,12 +558,20 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                           (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                       (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                        key = keyOffset;
                     }
                 }
                 original[original.length = column] = key;
@@ -683,7 +699,8 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
     contexts[-1] = contextParent;
     for (; index < length; paths.index = ++index) {
         path = paths[index];
-        column = path.index || (path.index = 0);
+        // Prevent prototype pollution by reading values without modifying the object
+        column = Object.prototype.hasOwnProperty.call(path, 'index') ? path.index : 0;
         last = path.length - 1;
         refs[-1] = path;
         crossed = [];
@@ -711,12 +728,20 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by reading values without modifying the object
+                                    var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                                   (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                               (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -946,12 +971,20 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by reading values without modifying the object
+                                    var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                                   (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                               (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         }
                         original[original.length = column] = key;
@@ -1174,17 +1207,46 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
-                            if (key == null || typeof key !== 'object') {
+                        // Prevent prototype pollution by checking if object has own property before modification
+                        if (Object.prototype.hasOwnProperty.call(key, 'index')) {
+                            if (++key.index === key.length) {
+                                key.index = 0;
+                                key = key[key.index];
+                                if (key == null || typeof key !== 'object') {
+                                    continue ascending;
+                                }
+                            } else {
+                                break ascending;
+                            }
+                        } else {
+                            // If no index property exists, skip this key to prevent pollution
+                            continue ascending;
+                        }
+                    }
+                    // Prevent prototype pollution by checking if object has own properties before modification
+                    if (Object.prototype.hasOwnProperty.call(key, 'offset') || Object.prototype.hasOwnProperty.call(key, 'from')) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : 
+                                   (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from + ((Object.prototype.hasOwnProperty.call(key, 'length') ? key.length : 1) || 1) - 1 : 0);
+                        if (Object.prototype.hasOwnProperty.call(key, 'to')) {
+                            if (++key.offset > keyTo) {
+                                key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
                                 continue ascending;
                             }
                         } else {
-                            break ascending;
+                            // Set 'to' property only if object has own 'from' or 'offset' property
+                            if (Object.prototype.hasOwnProperty.call(key, 'from') || Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                key.to = keyTo;
+                            }
+                            if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                if (++key.offset > keyTo) {
+                                    key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                                    continue ascending;
+                                }
+                            } else {
+                                continue ascending;
+                            }
                         }
-                    }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
+                    } else {
                         continue ascending;
                     }
                     break ascending;
@@ -1278,12 +1340,20 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                           (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                       (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -1544,12 +1614,20 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                           (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                       (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                        key = keyOffset;
                     }
                 }
                 original[original.length = column] = key;
@@ -2036,7 +2114,8 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
         pbv = pbvs[index];
         path = pbv.path;
         message = pbv.value;
-        column = path.index || (path.index = 0);
+        // Prevent prototype pollution by reading values without modifying the object
+        column = Object.prototype.hasOwnProperty.call(path, 'index') ? path.index : 0;
         offset = 0;
         last = path.length - 1;
         contextParent = boundContext;
@@ -2050,12 +2129,20 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                            key = key[keyIndex];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                               (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                           (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     }
                     if (key == null) {
@@ -2332,12 +2419,20 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                            key = key[keyIndex];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                               (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                           (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     }
                     original[original.length = column] = key;
@@ -2904,8 +2999,9 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
     batchedPathMaps[-1] = batchedPathMap;
     for (; index < length; paths.index = ++index) {
         path = paths[index];
-        column = path.index || (path.index = 0);
-        offset = path.offset || (path.offset = 0);
+        // Prevent prototype pollution by reading values without modifying the object
+        column = Object.prototype.hasOwnProperty.call(path, 'index') ? path.index : 0;
+        offset = Object.prototype.hasOwnProperty.call(path, 'offset') ? path.offset : 0;
         last = path.length - 1;
         depth = -1;
         refs[-1] = path;
@@ -2936,12 +3032,20 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by reading values without modifying the object
+                                    var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                                   (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                               (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -4102,12 +4206,20 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by reading values without modifying the object
+                                    var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                                   (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                               (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         }
                         original[original.length = column] = key;
@@ -4739,12 +4851,20 @@ function invalidatePath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                           (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                       (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -4922,12 +5042,20 @@ function invalidatePath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by reading values without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                           (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution by reading values without modifying the object
+                        var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                       (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                        key = keyOffset;
                     }
                 }
                 if (key != null) {
@@ -5075,8 +5203,9 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
     contexts[-1] = contextParent;
     for (; index < length; paths.index = ++index) {
         path = paths[index];
-        column = path.index || (path.index = 0);
-        offset = path.offset || (path.offset = 0);
+        // Prevent prototype pollution by reading values without modifying the object
+        column = Object.prototype.hasOwnProperty.call(path, 'index') ? path.index : 0;
+        offset = Object.prototype.hasOwnProperty.call(path, 'offset') ? path.offset : 0;
         last = path.length - 1;
         depth = -1;
         refs[-1] = path;
@@ -5091,12 +5220,20 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by reading values without modifying the object
+                                    var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                                   (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                               (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -5274,12 +5411,20 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    // Prevent prototype pollution by reading values without modifying the object
+                                    var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                                   (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Prevent prototype pollution by reading values without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : 
+                                               (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         }
                         if (key != null) {
@@ -5374,17 +5519,46 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
-                            if (key == null || typeof key !== 'object') {
+                        // Prevent prototype pollution by checking if object has own property before modification
+                        if (Object.prototype.hasOwnProperty.call(key, 'index')) {
+                            if (++key.index === key.length) {
+                                key.index = 0;
+                                key = key[key.index];
+                                if (key == null || typeof key !== 'object') {
+                                    continue ascending;
+                                }
+                            } else {
+                                break ascending;
+                            }
+                        } else {
+                            // If no index property exists, skip this key to prevent pollution
+                            continue ascending;
+                        }
+                    }
+                    // Prevent prototype pollution by checking if object has own properties before modification
+                    if (Object.prototype.hasOwnProperty.call(key, 'offset') || Object.prototype.hasOwnProperty.call(key, 'from')) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : 
+                                   (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from + ((Object.prototype.hasOwnProperty.call(key, 'length') ? key.length : 1) || 1) - 1 : 0);
+                        if (Object.prototype.hasOwnProperty.call(key, 'to')) {
+                            if (++key.offset > keyTo) {
+                                key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
                                 continue ascending;
                             }
                         } else {
-                            break ascending;
+                            // Set 'to' property only if object has own 'from' or 'offset' property
+                            if (Object.prototype.hasOwnProperty.call(key, 'from') || Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                key.to = keyTo;
+                            }
+                            if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                if (++key.offset > keyTo) {
+                                    key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                                    continue ascending;
+                                }
+                            } else {
+                                continue ascending;
+                            }
                         }
-                    }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
+                    } else {
                         continue ascending;
                     }
                     break ascending;
