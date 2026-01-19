@@ -10,6 +10,28 @@ var Observable = Rx.Observable,
     µSize = 0.25,
     MIN_SAFE_INTEGER = -Math.pow(2, 53) - 1;
 
+// Helper function to check if an object is safe to modify (not a prototype pollution vector)
+function isSafeToModify(obj) {
+    if (obj == null || typeof obj !== 'object') {
+        return false;
+    }
+    // Check if the object is Object.prototype or any dangerous prototype reference
+    if (obj === Object.prototype || 
+        obj === Array.prototype || 
+        obj === Function.prototype ||
+        obj === String.prototype ||
+        obj === Number.prototype ||
+        obj === Boolean.prototype) {
+        return false;
+    }
+    return true;
+}
+
+// Helper function to check if a key is a dangerous prototype pollution key
+function isDangerousKey(key) {
+    return key === '__proto__' || key === 'constructor' || key === 'prototype';
+}
+
 function PathEvaluator(maxSize, collectRatio, loader, cache, path, now, errorSelector) {
     if (loader != null && typeof loader === 'object') {
         this.loader = loader;
@@ -1278,15 +1300,32 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution: only modify if safe
+                        if (isSafeToModify(key)) {
+                            key = key[key.index || (key.index = 0)];
+                        } else {
+                            key = key[key.index || 0];
+                        }
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (isSafeToModify(key)) {
+                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            } else {
+                                key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                            }
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        if (isSafeToModify(key)) {
+                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        } else {
+                            key = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                        }
                     }
                 }
                 if (key == null) {
+                    continue;
+                }
+                // Prevent prototype pollution: skip dangerous keys
+                if (isDangerousKey(key)) {
                     continue;
                 }
                 original[original.length = column] = key;
