@@ -2951,7 +2951,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         optimized[optimized.length = column + offset] = key;
                         context = contextParent[key];
                         message = messageParent && messageParent[key];
-                        batchedPathMap = batchedPathMap[key];
+                        batchedPathMap = (key !== '__proto__' && key !== 'constructor' && key !== 'prototype' && batchedPathMap && Object.prototype.hasOwnProperty.call(batchedPathMap, key)) ? batchedPathMap[key] : undefined;
                         var sizeOffset$2 = 0;
                         if (message == null) {
                             messageValue = message;
@@ -4115,7 +4115,7 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                             optimized[optimized.length = column + offset] = key;
                             context = contextParent[key];
                             message = messageParent && messageParent[key];
-                            batchedPathMap = batchedPathMap[key];
+                            batchedPathMap = (key !== '__proto__' && key !== 'constructor' && key !== 'prototype' && batchedPathMap && Object.prototype.hasOwnProperty.call(batchedPathMap, key)) ? batchedPathMap[key] : undefined;
                             var sizeOffset$5 = 0;
                             if (message == null) {
                                 messageValue = message;
