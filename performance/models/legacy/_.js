@@ -10,6 +10,34 @@ var Observable = Rx.Observable,
     µSize = 0.25,
     MIN_SAFE_INTEGER = -Math.pow(2, 53) - 1;
 
+// Helper function to safely check if an object is safe to modify (prototype pollution protection)
+function isSafeToModify(obj) {
+    if (obj == null || typeof obj !== 'object') {
+        return false;
+    }
+    // Prevent modification of Object.prototype and other built-in prototypes
+    if (obj === Object.prototype || obj === Array.prototype || obj === Function.prototype) {
+        return false;
+    }
+    // Prevent modification through constructor
+    var constructor = obj.constructor;
+    if (constructor && constructor.prototype === obj) {
+        return false;
+    }
+    return true;
+}
+
+// Helper function to safely get or set a property with default value (prototype pollution protection)
+function safeGetOrSet(obj, prop, defaultValue) {
+    if (!isSafeToModify(obj)) {
+        return defaultValue;
+    }
+    if (!Object.prototype.hasOwnProperty.call(obj, prop)) {
+        obj[prop] = defaultValue;
+    }
+    return obj[prop];
+}
+
 function PathEvaluator(maxSize, collectRatio, loader, cache, path, now, errorSelector) {
     if (loader != null && typeof loader === 'object') {
         this.loader = loader;
@@ -316,12 +344,29 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSet(key, 'index', 0);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (isSafeToModify(key)) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.from = 0;
+                                    }
+                                    key.offset = key.from;
+                                }
+                                key = key.offset;
+                            }
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        if (isSafeToModify(key)) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.from = 0;
+                                }
+                                key.offset = key.from;
+                            }
+                            key = key.offset;
+                        }
                     }
                 }
                 if (key == null) {
@@ -711,12 +756,29 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (isSafeToModify(key)) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                                key.from = 0;
+                                            }
+                                            key.offset = key.from;
+                                        }
+                                        key = key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.from = 0;
+                                        }
+                                        key.offset = key.from;
+                                    }
+                                    key = key.offset;
+                                }
                             }
                         }
                         if (key == null) {
@@ -1174,18 +1236,32 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
-                            if (key == null || typeof key !== 'object') {
-                                continue ascending;
+                        if (isSafeToModify(key)) {
+                            if (++key.index === key.length) {
+                                key.index = 0;
+                                key = key[key.index];
+                                if (key == null || typeof key !== 'object') {
+                                    continue ascending;
+                                }
+                            } else {
+                                break ascending;
                             }
                         } else {
-                            break ascending;
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    if (isSafeToModify(key)) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : null;
+                        if (keyTo === null) {
+                            var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            var keyLength = Object.prototype.hasOwnProperty.call(key, 'length') ? key.length : 1;
+                            keyTo = keyFrom + keyLength - 1;
+                            key.to = keyTo;
+                        }
+                        if (++key.offset > keyTo) {
+                            key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            continue ascending;
+                        }
                     }
                     break ascending;
                 }
@@ -1278,12 +1354,29 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSet(key, 'index', 0);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            if (isSafeToModify(key)) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                        key.from = 0;
+                                    }
+                                    key.offset = key.from;
+                                }
+                                key = key.offset;
+                            }
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        if (isSafeToModify(key)) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.from = 0;
+                                }
+                                key.offset = key.from;
+                            }
+                            key = key.offset;
+                        }
                     }
                 }
                 if (key == null) {
@@ -5374,18 +5467,32 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
-                            if (key == null || typeof key !== 'object') {
-                                continue ascending;
+                        if (isSafeToModify(key)) {
+                            if (++key.index === key.length) {
+                                key.index = 0;
+                                key = key[key.index];
+                                if (key == null || typeof key !== 'object') {
+                                    continue ascending;
+                                }
+                            } else {
+                                break ascending;
                             }
                         } else {
-                            break ascending;
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    if (isSafeToModify(key)) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : null;
+                        if (keyTo === null) {
+                            var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            var keyLength = Object.prototype.hasOwnProperty.call(key, 'length') ? key.length : 1;
+                            keyTo = keyFrom + keyLength - 1;
+                            key.to = keyTo;
+                        }
+                        if (++key.offset > keyTo) {
+                            key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            continue ascending;
+                        }
                     }
                     break ascending;
                 }
@@ -5427,12 +5534,29 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (isSafeToModify(key)) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                                key.from = 0;
+                                            }
+                                            key.offset = key.from;
+                                        }
+                                        key = key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.from = 0;
+                                        }
+                                        key.offset = key.from;
+                                    }
+                                    key = key.offset;
+                                }
                             }
                         }
                         if (key == null) {
@@ -5450,12 +5574,29 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (isSafeToModify(key)) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                                key.from = 0;
+                                            }
+                                            key.offset = key.from;
+                                        }
+                                        key = key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.from = 0;
+                                        }
+                                        key.offset = key.from;
+                                    }
+                                    key = key.offset;
+                                }
                             }
                         }
                         if (key != null) {
@@ -5478,18 +5619,32 @@ function pathMapWithObserver(paths_, observer_, parent) {
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
-                            if (key == null || typeof key !== 'object') {
-                                continue ascending;
+                        if (isSafeToModify(key)) {
+                            if (++key.index === key.length) {
+                                key.index = 0;
+                                key = key[key.index];
+                                if (key == null || typeof key !== 'object') {
+                                    continue ascending;
+                                }
+                            } else {
+                                break ascending;
                             }
                         } else {
-                            break ascending;
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    if (isSafeToModify(key)) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : null;
+                        if (keyTo === null) {
+                            var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            var keyLength = Object.prototype.hasOwnProperty.call(key, 'length') ? key.length : 1;
+                            keyTo = keyFrom + keyLength - 1;
+                            key.to = keyTo;
+                        }
+                        if (++key.offset > keyTo) {
+                            key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            continue ascending;
+                        }
                     }
                     break ascending;
                 }
@@ -5527,12 +5682,29 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (isSafeToModify(key)) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                                key.from = 0;
+                                            }
+                                            key.offset = key.from;
+                                        }
+                                        key = key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.from = 0;
+                                        }
+                                        key.offset = key.from;
+                                    }
+                                    key = key.offset;
+                                }
                             }
                         }
                         if (key == null) {
@@ -5552,12 +5724,29 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    if (isSafeToModify(key)) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                                key.from = 0;
+                                            }
+                                            key.offset = key.from;
+                                        }
+                                        key = key.offset;
+                                    }
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                            key.from = 0;
+                                        }
+                                        key.offset = key.from;
+                                    }
+                                    key = key.offset;
+                                }
                             }
                         }
                         if (key != null) {
@@ -5582,18 +5771,32 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
-                            if (key == null || typeof key !== 'object') {
-                                continue ascending;
+                        if (isSafeToModify(key)) {
+                            if (++key.index === key.length) {
+                                key.index = 0;
+                                key = key[key.index];
+                                if (key == null || typeof key !== 'object') {
+                                    continue ascending;
+                                }
+                            } else {
+                                break ascending;
                             }
                         } else {
-                            break ascending;
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    if (isSafeToModify(key)) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : null;
+                        if (keyTo === null) {
+                            var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            var keyLength = Object.prototype.hasOwnProperty.call(key, 'length') ? key.length : 1;
+                            keyTo = keyFrom + keyLength - 1;
+                            key.to = keyTo;
+                        }
+                        if (++key.offset > keyTo) {
+                            key.offset = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            continue ascending;
+                        }
                     }
                     break ascending;
                 }
