@@ -4739,12 +4739,15 @@ function invalidatePath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = key.index != null ? key.index : 0;
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyOffset = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyOffset = key.offset !== void 0 ? key.offset : (key.from !== void 0 ? key.from : 0);
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
