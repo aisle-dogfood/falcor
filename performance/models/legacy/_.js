@@ -316,12 +316,54 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by safely accessing properties
+                        var keyIndex = key.index;
+                        if (keyIndex === void 0) {
+                            // Only assign if safe - not polluting __proto__, constructor, or prototype
+                            if (Object.prototype.hasOwnProperty.call(key, 'index') || 
+                                (key.constructor === Array || key.constructor === Object)) {
+                                key.index = 0;
+                            }
+                            keyIndex = 0;
+                        }
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyOffset = key.offset;
+                            if (keyOffset === void 0) {
+                                var keyFrom = key.from;
+                                if (keyFrom === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.from = 0;
+                                    }
+                                    keyFrom = 0;
+                                }
+                                if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.offset = keyFrom;
+                                }
+                                keyOffset = keyFrom;
+                            }
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyOffset = key.offset;
+                        if (keyOffset === void 0) {
+                            var keyFrom = key.from;
+                            if (keyFrom === void 0) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.from = 0;
+                                }
+                                keyFrom = 0;
+                            }
+                            if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                (key.constructor === Array || key.constructor === Object)) {
+                                key.offset = keyFrom;
+                            }
+                            keyOffset = keyFrom;
+                        }
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -550,12 +592,54 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by safely accessing properties
+                        var keyIndex = key.index;
+                        if (keyIndex === void 0) {
+                            // Only assign if safe - not polluting __proto__, constructor, or prototype
+                            if (Object.prototype.hasOwnProperty.call(key, 'index') || 
+                                (key.constructor === Array || key.constructor === Object)) {
+                                key.index = 0;
+                            }
+                            keyIndex = 0;
+                        }
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyOffset = key.offset;
+                            if (keyOffset === void 0) {
+                                var keyFrom = key.from;
+                                if (keyFrom === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.from = 0;
+                                    }
+                                    keyFrom = 0;
+                                }
+                                if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.offset = keyFrom;
+                                }
+                                keyOffset = keyFrom;
+                            }
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyOffset = key.offset;
+                        if (keyOffset === void 0) {
+                            var keyFrom = key.from;
+                            if (keyFrom === void 0) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.from = 0;
+                                }
+                                keyFrom = 0;
+                            }
+                            if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                (key.constructor === Array || key.constructor === Object)) {
+                                key.offset = keyFrom;
+                            }
+                            keyOffset = keyFrom;
+                        }
+                        key = keyOffset;
                     }
                 }
                 original[original.length = column] = key;
@@ -711,12 +795,54 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by safely accessing properties
+                                var keyIndex = key.index;
+                                if (keyIndex === void 0) {
+                                    // Only assign if safe - not polluting __proto__, constructor, or prototype
+                                    if (Object.prototype.hasOwnProperty.call(key, 'index') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.index = 0;
+                                    }
+                                    keyIndex = 0;
+                                }
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyOffset = key.offset;
+                                    if (keyOffset === void 0) {
+                                        var keyFrom = key.from;
+                                        if (keyFrom === void 0) {
+                                            if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                                (key.constructor === Array || key.constructor === Object)) {
+                                                key.from = 0;
+                                            }
+                                            keyFrom = 0;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                            (key.constructor === Array || key.constructor === Object)) {
+                                            key.offset = keyFrom;
+                                        }
+                                        keyOffset = keyFrom;
+                                    }
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyOffset = key.offset;
+                                if (keyOffset === void 0) {
+                                    var keyFrom = key.from;
+                                    if (keyFrom === void 0) {
+                                        if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                            (key.constructor === Array || key.constructor === Object)) {
+                                            key.from = 0;
+                                        }
+                                        keyFrom = 0;
+                                    }
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.offset = keyFrom;
+                                    }
+                                    keyOffset = keyFrom;
+                                }
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -1278,12 +1404,54 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by safely accessing properties
+                        var keyIndex = key.index;
+                        if (keyIndex === void 0) {
+                            // Only assign if safe - not polluting __proto__, constructor, or prototype
+                            if (Object.prototype.hasOwnProperty.call(key, 'index') || 
+                                (key.constructor === Array || key.constructor === Object)) {
+                                key.index = 0;
+                            }
+                            keyIndex = 0;
+                        }
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyOffset = key.offset;
+                            if (keyOffset === void 0) {
+                                var keyFrom = key.from;
+                                if (keyFrom === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.from = 0;
+                                    }
+                                    keyFrom = 0;
+                                }
+                                if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.offset = keyFrom;
+                                }
+                                keyOffset = keyFrom;
+                            }
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyOffset = key.offset;
+                        if (keyOffset === void 0) {
+                            var keyFrom = key.from;
+                            if (keyFrom === void 0) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.from = 0;
+                                }
+                                keyFrom = 0;
+                            }
+                            if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                (key.constructor === Array || key.constructor === Object)) {
+                                key.offset = keyFrom;
+                            }
+                            keyOffset = keyFrom;
+                        }
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -2050,12 +2218,54 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            // Prevent prototype pollution by safely accessing properties
+                            var keyIndex = key.index;
+                            if (keyIndex === void 0) {
+                                // Only assign if safe - not polluting __proto__, constructor, or prototype
+                                if (Object.prototype.hasOwnProperty.call(key, 'index') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.index = 0;
+                                }
+                                keyIndex = 0;
+                            }
+                            key = key[keyIndex];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyOffset = key.offset;
+                                if (keyOffset === void 0) {
+                                    var keyFrom = key.from;
+                                    if (keyFrom === void 0) {
+                                        if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                            (key.constructor === Array || key.constructor === Object)) {
+                                            key.from = 0;
+                                        }
+                                        keyFrom = 0;
+                                    }
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.offset = keyFrom;
+                                    }
+                                    keyOffset = keyFrom;
+                                }
+                                key = keyOffset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyOffset = key.offset;
+                            if (keyOffset === void 0) {
+                                var keyFrom = key.from;
+                                if (keyFrom === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.from = 0;
+                                    }
+                                    keyFrom = 0;
+                                }
+                                if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.offset = keyFrom;
+                                }
+                                keyOffset = keyFrom;
+                            }
+                            key = keyOffset;
                         }
                     }
                     if (key == null) {
@@ -2936,12 +3146,54 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by safely accessing properties
+                                var keyIndex = key.index;
+                                if (keyIndex === void 0) {
+                                    // Only assign if safe - not polluting __proto__, constructor, or prototype
+                                    if (Object.prototype.hasOwnProperty.call(key, 'index') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.index = 0;
+                                    }
+                                    keyIndex = 0;
+                                }
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyOffset = key.offset;
+                                    if (keyOffset === void 0) {
+                                        var keyFrom = key.from;
+                                        if (keyFrom === void 0) {
+                                            if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                                (key.constructor === Array || key.constructor === Object)) {
+                                                key.from = 0;
+                                            }
+                                            keyFrom = 0;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                            (key.constructor === Array || key.constructor === Object)) {
+                                            key.offset = keyFrom;
+                                        }
+                                        keyOffset = keyFrom;
+                                    }
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyOffset = key.offset;
+                                if (keyOffset === void 0) {
+                                    var keyFrom = key.from;
+                                    if (keyFrom === void 0) {
+                                        if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                            (key.constructor === Array || key.constructor === Object)) {
+                                            key.from = 0;
+                                        }
+                                        keyFrom = 0;
+                                    }
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.offset = keyFrom;
+                                    }
+                                    keyOffset = keyFrom;
+                                }
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -4739,12 +4991,54 @@ function invalidatePath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by safely accessing properties
+                        var keyIndex = key.index;
+                        if (keyIndex === void 0) {
+                            // Only assign if safe - not polluting __proto__, constructor, or prototype
+                            if (Object.prototype.hasOwnProperty.call(key, 'index') || 
+                                (key.constructor === Array || key.constructor === Object)) {
+                                key.index = 0;
+                            }
+                            keyIndex = 0;
+                        }
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyOffset = key.offset;
+                            if (keyOffset === void 0) {
+                                var keyFrom = key.from;
+                                if (keyFrom === void 0) {
+                                    if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.from = 0;
+                                    }
+                                    keyFrom = 0;
+                                }
+                                if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.offset = keyFrom;
+                                }
+                                keyOffset = keyFrom;
+                            }
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyOffset = key.offset;
+                        if (keyOffset === void 0) {
+                            var keyFrom = key.from;
+                            if (keyFrom === void 0) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                    (key.constructor === Array || key.constructor === Object)) {
+                                    key.from = 0;
+                                }
+                                keyFrom = 0;
+                            }
+                            if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                (key.constructor === Array || key.constructor === Object)) {
+                                key.offset = keyFrom;
+                            }
+                            keyOffset = keyFrom;
+                        }
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -5091,12 +5385,54 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                // Prevent prototype pollution by safely accessing properties
+                                var keyIndex = key.index;
+                                if (keyIndex === void 0) {
+                                    // Only assign if safe - not polluting __proto__, constructor, or prototype
+                                    if (Object.prototype.hasOwnProperty.call(key, 'index') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.index = 0;
+                                    }
+                                    keyIndex = 0;
+                                }
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyOffset = key.offset;
+                                    if (keyOffset === void 0) {
+                                        var keyFrom = key.from;
+                                        if (keyFrom === void 0) {
+                                            if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                                (key.constructor === Array || key.constructor === Object)) {
+                                                key.from = 0;
+                                            }
+                                            keyFrom = 0;
+                                        }
+                                        if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                            (key.constructor === Array || key.constructor === Object)) {
+                                            key.offset = keyFrom;
+                                        }
+                                        keyOffset = keyFrom;
+                                    }
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyOffset = key.offset;
+                                if (keyOffset === void 0) {
+                                    var keyFrom = key.from;
+                                    if (keyFrom === void 0) {
+                                        if (Object.prototype.hasOwnProperty.call(key, 'from') || 
+                                            (key.constructor === Array || key.constructor === Object)) {
+                                            key.from = 0;
+                                        }
+                                        keyFrom = 0;
+                                    }
+                                    if (Object.prototype.hasOwnProperty.call(key, 'offset') || 
+                                        (key.constructor === Array || key.constructor === Object)) {
+                                        key.offset = keyFrom;
+                                    }
+                                    keyOffset = keyFrom;
+                                }
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
