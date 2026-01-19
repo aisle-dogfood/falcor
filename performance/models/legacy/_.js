@@ -5982,6 +5982,10 @@ function serialize(cache) {
             message = frame.message;
             keys = frame.keys;
             while ((key = keys.pop()) != null) {
+                // Prevent prototype pollution by blocking dangerous keys
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
                 context = context[key];
                 if (context == null || typeof context !== 'object') {
                     message[key] = context;
