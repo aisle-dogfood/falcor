@@ -1175,7 +1175,8 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
                         if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
@@ -4560,7 +4561,8 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
                         if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
@@ -5375,7 +5377,8 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
                         if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
@@ -5479,7 +5482,8 @@ function pathMapWithObserver(paths_, observer_, parent) {
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
                         if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
@@ -5583,7 +5587,8 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
                         if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
