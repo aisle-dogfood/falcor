@@ -5438,6 +5438,9 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         if (key == null) {
                             continue;
                         }
+                        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                            continue;
+                        }
                         observers = (context = contextParent[key] || (contextParent[key] = {
                             __observers: []
                         })).__observers;
@@ -5459,6 +5462,9 @@ function pathMapWithObserver(paths_, observer_, parent) {
                             }
                         }
                         if (key != null) {
+                            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                                break building_pathmap;
+                            }
                             observers = (context = contextParent[key] || (contextParent[key] = {
                                 __observers: []
                             })).__observers;
