@@ -2036,7 +2036,7 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
         pbv = pbvs[index];
         path = pbv.path;
         message = pbv.value;
-        column = path.index || (path.index = 0);
+        column = Object.prototype.hasOwnProperty.call(path, 'index') ? path.index : 0;
         offset = 0;
         last = path.length - 1;
         contextParent = boundContext;
@@ -2050,12 +2050,18 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            // Safely access index property without modifying the object
+                            var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                            key = key[keyIndex];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                // Safely access offset and from properties without modifying the object
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                key = keyOffset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Safely access offset and from properties without modifying the object
+                            var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                            key = keyOffset;
                         }
                     }
                     if (key == null) {
