@@ -6002,7 +6002,11 @@ function serialize(cache) {
     return message;
 
     function internalKeys(x) {
-        return x[0] !== '_' || x[1] !== '_';
+        // Filter out internal keys and prototype pollution vectors
+        return (x[0] !== '_' || x[1] !== '_') && 
+               x !== '__proto__' && 
+               x !== 'constructor' && 
+               x !== 'prototype';
     }
 }
 
@@ -6040,7 +6044,12 @@ function deserialize(cache) {
     return this;
 
     function internalKeys(x) {
-        return x[0] !== '$' && (x[0] !== '_' || x[1] !== '_');
+        // Filter out internal keys and prototype pollution vectors
+        return x[0] !== '$' && 
+               (x[0] !== '_' || x[1] !== '_') && 
+               x !== '__proto__' && 
+               x !== 'constructor' && 
+               x !== 'prototype';
     }
 }
 
@@ -6065,7 +6074,11 @@ function flatten(obj) {
             keys.sort();
             for (keyCount = 0; keyCount < keys.length; keyCount++) {
                 key = keys[keyCount];
-                if (key[0] !== '_' || key[1] !== '_') {
+                // Filter out internal keys and prototype pollution vectors
+                if ((key[0] !== '_' || key[1] !== '_') && 
+                    key !== '__proto__' && 
+                    key !== 'constructor' && 
+                    key !== 'prototype') {
                     flattenedObject[key] = flatten(obj[key]);
                 }
             }
@@ -6131,7 +6144,13 @@ function createKey(list) {
 }
 
 function notPathMapInternalKeys(key) {
-    return key !== '__observers' && key !== '__pending' && key !== '__batchID';
+    // Filter out internal keys and prototype pollution vectors
+    return key !== '__observers' && 
+           key !== '__pending' && 
+           key !== '__batchID' && 
+           key !== '__proto__' && 
+           key !== 'constructor' && 
+           key !== 'prototype';
 }
 /**
  * Builds the set of collapsed
