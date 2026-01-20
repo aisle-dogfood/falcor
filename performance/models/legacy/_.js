@@ -1174,18 +1174,35 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                        // Prevent prototype pollution by ensuring 'index' is an own property
+                        if (Object.prototype.hasOwnProperty.call(key, 'index') && ++key.index === key.length) {
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
-                        } else {
+                        } else if (Object.prototype.hasOwnProperty.call(key, 'index')) {
                             break ascending;
+                        } else {
+                            // If 'index' is not an own property, skip to avoid prototype pollution
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    // Prevent prototype pollution by ensuring properties are own properties
+                    if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : 
+                                    (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from + (key.length || 1) - 1 : undefined);
+                        if (keyTo !== undefined) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'to')) {
+                                key.to = keyTo;
+                            }
+                            if (++key.offset > keyTo) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.offset = key.from;
+                                }
+                                continue ascending;
+                            }
+                        }
                     }
                     break ascending;
                 }
@@ -4559,18 +4576,35 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                        // Prevent prototype pollution by ensuring 'index' is an own property
+                        if (Object.prototype.hasOwnProperty.call(key, 'index') && ++key.index === key.length) {
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
-                        } else {
+                        } else if (Object.prototype.hasOwnProperty.call(key, 'index')) {
                             break ascending;
+                        } else {
+                            // If 'index' is not an own property, skip to avoid prototype pollution
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    // Prevent prototype pollution by ensuring properties are own properties
+                    if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : 
+                                    (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from + (key.length || 1) - 1 : undefined);
+                        if (keyTo !== undefined) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'to')) {
+                                key.to = keyTo;
+                            }
+                            if (++key.offset > keyTo) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.offset = key.from;
+                                }
+                                continue ascending;
+                            }
+                        }
                     }
                     break ascending;
                 }
@@ -5374,18 +5408,35 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                        // Prevent prototype pollution by ensuring 'index' is an own property
+                        if (Object.prototype.hasOwnProperty.call(key, 'index') && ++key.index === key.length) {
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
-                        } else {
+                        } else if (Object.prototype.hasOwnProperty.call(key, 'index')) {
                             break ascending;
+                        } else {
+                            // If 'index' is not an own property, skip to avoid prototype pollution
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    // Prevent prototype pollution by ensuring properties are own properties
+                    if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : 
+                                    (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from + (key.length || 1) - 1 : undefined);
+                        if (keyTo !== undefined) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'to')) {
+                                key.to = keyTo;
+                            }
+                            if (++key.offset > keyTo) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.offset = key.from;
+                                }
+                                continue ascending;
+                            }
+                        }
                     }
                     break ascending;
                 }
@@ -5478,18 +5529,35 @@ function pathMapWithObserver(paths_, observer_, parent) {
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                        // Prevent prototype pollution by ensuring 'index' is an own property
+                        if (Object.prototype.hasOwnProperty.call(key, 'index') && ++key.index === key.length) {
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
-                        } else {
+                        } else if (Object.prototype.hasOwnProperty.call(key, 'index')) {
                             break ascending;
+                        } else {
+                            // If 'index' is not an own property, skip to avoid prototype pollution
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    // Prevent prototype pollution by ensuring properties are own properties
+                    if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : 
+                                    (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from + (key.length || 1) - 1 : undefined);
+                        if (keyTo !== undefined) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'to')) {
+                                key.to = keyTo;
+                            }
+                            if (++key.offset > keyTo) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.offset = key.from;
+                                }
+                                continue ascending;
+                            }
+                        }
                     }
                     break ascending;
                 }
@@ -5582,18 +5650,35 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                     }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
-                        if (++key.index === key.length) {
-                            key = key[key.index = 0];
+                        // Prevent prototype pollution by ensuring 'index' is an own property
+                        if (Object.prototype.hasOwnProperty.call(key, 'index') && ++key.index === key.length) {
+                            key.index = 0;
+                            key = key[0];
                             if (key == null || typeof key !== 'object') {
                                 continue ascending;
                             }
-                        } else {
+                        } else if (Object.prototype.hasOwnProperty.call(key, 'index')) {
                             break ascending;
+                        } else {
+                            // If 'index' is not an own property, skip to avoid prototype pollution
+                            continue ascending;
                         }
                     }
-                    if (++key.offset > (key.to || (key.to = key.from + (key.length || 1) - 1))) {
-                        key.offset = key.from;
-                        continue ascending;
+                    // Prevent prototype pollution by ensuring properties are own properties
+                    if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                        var keyTo = Object.prototype.hasOwnProperty.call(key, 'to') ? key.to : 
+                                    (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from + (key.length || 1) - 1 : undefined);
+                        if (keyTo !== undefined) {
+                            if (!Object.prototype.hasOwnProperty.call(key, 'to')) {
+                                key.to = keyTo;
+                            }
+                            if (++key.offset > keyTo) {
+                                if (Object.prototype.hasOwnProperty.call(key, 'from')) {
+                                    key.offset = key.from;
+                                }
+                                continue ascending;
+                            }
+                        }
                     }
                     break ascending;
                 }
