@@ -5982,6 +5982,10 @@ function serialize(cache) {
             message = frame.message;
             keys = frame.keys;
             while ((key = keys.pop()) != null) {
+                // Prevent prototype pollution by skipping dangerous properties
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
                 context = context[key];
                 if (context == null || typeof context !== 'object') {
                     message[key] = context;
@@ -6065,7 +6069,9 @@ function flatten(obj) {
             keys.sort();
             for (keyCount = 0; keyCount < keys.length; keyCount++) {
                 key = keys[keyCount];
-                if (key[0] !== '_' || key[1] !== '_') {
+                // Prevent prototype pollution by skipping dangerous properties
+                if ((key[0] !== '_' || key[1] !== '_') && 
+                    key !== '__proto__' && key !== 'constructor' && key !== 'prototype') {
                     flattenedObject[key] = flatten(obj[key]);
                 }
             }
