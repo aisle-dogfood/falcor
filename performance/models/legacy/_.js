@@ -6002,7 +6002,7 @@ function serialize(cache) {
     return message;
 
     function internalKeys(x) {
-        return x[0] !== '_' || x[1] !== '_';
+        return (x[0] !== '_' || x[1] !== '_') && x !== 'constructor' && x !== 'prototype';
     }
 }
 
@@ -6040,7 +6040,7 @@ function deserialize(cache) {
     return this;
 
     function internalKeys(x) {
-        return x[0] !== '$' && (x[0] !== '_' || x[1] !== '_');
+        return x[0] !== '$' && (x[0] !== '_' || x[1] !== '_') && x !== 'constructor' && x !== 'prototype';
     }
 }
 
