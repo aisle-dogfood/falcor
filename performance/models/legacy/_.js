@@ -1278,12 +1278,45 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        // Prevent prototype pollution by checking hasOwnProperty before assignment
+                        var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                        if (!Object.prototype.hasOwnProperty.call(key, 'index') && key.index === undefined) {
+                            key.index = 0;
+                        }
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            // Prevent prototype pollution by checking hasOwnProperty before assignment
+                            var keyOffset;
+                            if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                keyOffset = key.offset;
+                            } else {
+                                var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from') && key.from === undefined) {
+                                    key.from = keyFrom;
+                                }
+                                keyOffset = keyFrom;
+                                if (key.offset === undefined) {
+                                    key.offset = keyOffset;
+                                }
+                            }
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        // Prevent prototype pollution by checking hasOwnProperty before assignment
+                        var keyOffset;
+                        if (Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                            keyOffset = key.offset;
+                        } else {
+                            var keyFrom = Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0;
+                            if (!Object.prototype.hasOwnProperty.call(key, 'from') && key.from === undefined) {
+                                key.from = keyFrom;
+                            }
+                            keyOffset = keyFrom;
+                            if (key.offset === undefined) {
+                                key.offset = keyOffset;
+                            }
+                        }
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
