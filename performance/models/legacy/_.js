@@ -5580,6 +5580,10 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                     if (key == null || typeof key !== 'object') {
                         continue ascending;
                     }
+                    // Prevent prototype pollution by checking if key is a prototype object
+                    if (key === Object.prototype || key === Array.prototype || key === Function.prototype) {
+                        continue ascending;
+                    }
                     if ( // TODO: replace this with a faster Array check.
                         Array.isArray(key)) {
                         if (++key.index === key.length) {
