@@ -5427,12 +5427,20 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    key = key[key.index || (key.index = 0)];
+                                    if (key != null && typeof key === 'object') {
+                                        if (isSafeToModify(key)) {
+                                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                        }
+                                    }
+                                } else {
+                                    key = key[0];
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                }
                             }
                         }
                         if (key == null) {
@@ -5450,12 +5458,20 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    key = key[key.index || (key.index = 0)];
+                                    if (key != null && typeof key === 'object') {
+                                        if (isSafeToModify(key)) {
+                                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                        }
+                                    }
+                                } else {
+                                    key = key[0];
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                }
                             }
                         }
                         if (key != null) {
@@ -5474,6 +5490,9 @@ function pathMapWithObserver(paths_, observer_, parent) {
                 for (; column >= 0; --column) {
                     key = path[column];
                     if (key == null || typeof key !== 'object') {
+                        continue ascending;
+                    }
+                    if (!isSafeToModify(key)) {
                         continue ascending;
                     }
                     if ( // TODO: replace this with a faster Array check.
@@ -5496,6 +5515,23 @@ function pathMapWithObserver(paths_, observer_, parent) {
         }
     }
     return parent;
+}
+
+// Helper function to check if an object is safe to modify (not a prototype)
+function isSafeToModify(obj) {
+    if (obj == null || typeof obj !== 'object') {
+        return false;
+    }
+    // Check if obj is Object.prototype, Array.prototype, Function.prototype, etc.
+    if (obj === Object.prototype || obj === Array.prototype || obj === Function.prototype) {
+        return false;
+    }
+    // Check for __proto__ pollution
+    var objConstructor = obj.constructor;
+    if (objConstructor && objConstructor.prototype === obj) {
+        return false;
+    }
+    return true;
 }
 
 function pathMapWithoutObserver(paths_, observer_, pathMap) {
@@ -5527,12 +5563,20 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    key = key[key.index || (key.index = 0)];
+                                    if (key != null && typeof key === 'object') {
+                                        if (isSafeToModify(key)) {
+                                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                        }
+                                    }
+                                } else {
+                                    key = key[0];
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                }
                             }
                         }
                         if (key == null) {
@@ -5552,12 +5596,20 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    key = key[key.index || (key.index = 0)];
+                                    if (key != null && typeof key === 'object') {
+                                        if (isSafeToModify(key)) {
+                                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                        }
+                                    }
+                                } else {
+                                    key = key[0];
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                if (isSafeToModify(key)) {
+                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                }
                             }
                         }
                         if (key != null) {
@@ -5578,6 +5630,9 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                 for (; column >= 0; --column) {
                     key = path[column];
                     if (key == null || typeof key !== 'object') {
+                        continue ascending;
+                    }
+                    if (!isSafeToModify(key)) {
                         continue ascending;
                     }
                     if ( // TODO: replace this with a faster Array check.
