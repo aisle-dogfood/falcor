@@ -10,6 +10,33 @@ var Observable = Rx.Observable,
     µSize = 0.25,
     MIN_SAFE_INTEGER = -Math.pow(2, 53) - 1;
 
+// Helper function to safely get or set a property on an object, preventing prototype pollution
+function safeGetOrSet(obj, prop, defaultValue) {
+    if (obj == null || typeof obj !== 'object') {
+        return defaultValue;
+    }
+    
+    // Check if we're dealing with a potentially dangerous object that could pollute prototypes
+    // Reject if obj is Object.prototype or if accessing would traverse the prototype chain unsafely
+    if (obj === Object.prototype || obj === Object || 
+        (obj.constructor && obj.constructor.prototype === obj)) {
+        return defaultValue;
+    }
+    
+    // Use hasOwnProperty to check if the property exists on the object itself
+    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+        return obj[prop];
+    }
+    
+    // Only set the property if it's safe to do so
+    // Additional check: ensure we're not setting on a frozen or sealed object
+    if (!Object.isFrozen(obj) && !Object.isSealed(obj)) {
+        obj[prop] = defaultValue;
+    }
+    
+    return defaultValue;
+}
+
 function PathEvaluator(maxSize, collectRatio, loader, cache, path, now, errorSelector) {
     if (loader != null && typeof loader === 'object') {
         this.loader = loader;
@@ -316,12 +343,17 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSet(key, 'index', 0);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSet(key, 'from', 0);
+                            var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyFrom = safeGetOrSet(key, 'from', 0);
+                        var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -550,12 +582,17 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSet(key, 'index', 0);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSet(key, 'from', 0);
+                            var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyFrom = safeGetOrSet(key, 'from', 0);
+                        var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                        key = keyOffset;
                     }
                 }
                 original[original.length = column] = key;
@@ -711,12 +748,17 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -946,12 +988,17 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         original[original.length = column] = key;
@@ -1278,12 +1325,17 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSet(key, 'index', 0);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSet(key, 'from', 0);
+                            var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyFrom = safeGetOrSet(key, 'from', 0);
+                        var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -1544,12 +1596,17 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSet(key, 'index', 0);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSet(key, 'from', 0);
+                            var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyFrom = safeGetOrSet(key, 'from', 0);
+                        var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                        key = keyOffset;
                     }
                 }
                 original[original.length = column] = key;
@@ -2050,12 +2107,17 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            var keyIndex = safeGetOrSet(key, 'index', 0);
+                            key = key[keyIndex];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSet(key, 'from', 0);
+                            var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                            key = keyOffset;
                         }
                     }
                     if (key == null) {
@@ -2332,12 +2394,17 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                     key = path[column];
                     if (key != null && typeof key === 'object') {
                         if (Array.isArray(key)) {
-                            key = key[key.index || (key.index = 0)];
+                            var keyIndex = safeGetOrSet(key, 'index', 0);
+                            key = key[keyIndex];
                             if (key != null && typeof key === 'object') {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         } else {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSet(key, 'from', 0);
+                            var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                            key = keyOffset;
                         }
                     }
                     original[original.length = column] = key;
@@ -2936,12 +3003,17 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -4102,12 +4174,17 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         original[original.length = column] = key;
@@ -4739,12 +4816,17 @@ function invalidatePath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSet(key, 'index', 0);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSet(key, 'from', 0);
+                            var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyFrom = safeGetOrSet(key, 'from', 0);
+                        var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                        key = keyOffset;
                     }
                 }
                 if (key == null) {
@@ -4922,12 +5004,17 @@ function invalidatePath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        var keyIndex = safeGetOrSet(key, 'index', 0);
+                        key = key[keyIndex];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            var keyFrom = safeGetOrSet(key, 'from', 0);
+                            var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                            key = keyOffset;
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        var keyFrom = safeGetOrSet(key, 'from', 0);
+                        var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                        key = keyOffset;
                     }
                 }
                 if (key != null) {
@@ -5091,12 +5178,17 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -5274,12 +5366,17 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         if (key != null) {
@@ -5427,12 +5524,17 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -5450,12 +5552,17 @@ function pathMapWithObserver(paths_, observer_, parent) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         if (key != null) {
@@ -5527,12 +5634,17 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         if (key == null) {
@@ -5552,12 +5664,17 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = safeGetOrSet(key, 'index', 0);
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyFrom = safeGetOrSet(key, 'from', 0);
+                                    var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyFrom = safeGetOrSet(key, 'from', 0);
+                                var keyOffset = safeGetOrSet(key, 'offset', keyFrom);
+                                key = keyOffset;
                             }
                         }
                         if (key != null) {
