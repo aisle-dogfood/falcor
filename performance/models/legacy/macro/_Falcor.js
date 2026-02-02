@@ -1918,6 +1918,9 @@ function getPathMap(model, map, errorSelector, boundPath) {
                                 }
                                 root$3 = head$2 = tail$2 = next$2 = prev$2 = void 0;
                             }
+                            // Apply errorSelector to sanitize the error node before cloning.
+                            // This prevents exposure of sensitive fields (e.g., stack traces) in the output.
+                            node = errorSelector(requestedPath, node);
                             var pbv = Object.create(null), i$8 = -1, n$8 = requestedPath.length, val, copy$3 = new Array(n$8);
                             while (++i$8 < n$8) {
                                 copy$3[i$8] = requestedPath[i$8];
@@ -2877,6 +2880,9 @@ function getPathMapsAsJSONG(model, pathMaps, values, errorSelector, boundPath) {
                                     }
                                     root$3 = head$2 = tail$2 = next$2 = prev$2 = void 0;
                                 }
+                                // Apply errorSelector to sanitize the error node before cloning.
+                                // This prevents exposure of sensitive fields (e.g., stack traces) in the output.
+                                node = errorSelector(requestedPath, node);
                                 var pbv = Object.create(null), i$13 = -1, n$13 = requestedPath.length, val, copy$3 = new Array(n$13);
                                 while (++i$13 < n$13) {
                                     copy$3[i$13] = requestedPath[i$13];
