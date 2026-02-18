@@ -32,7 +32,84 @@ var __GENERATION_GUID = 0,
     __REFERENCE_KEYS = [__CONTAINER, __CONTEXT, __REF_INDEX],
     __NODE_KEYS = [
         "__next", "__prev",
-        __GENERATION, __GENERATION_UPDATED,
+    __RELATIVE_PATH = "relative_path";
+
+// Helper functions to prevent prototype pollution
+function safeGetIndex(obj) {
+    return Object.prototype.hasOwnProperty.call(obj, 'index') ? obj.index : 0;
+}
+
+function safeSetIndex(obj, value) {
+    // Prevent prototype pollution by checking that the object is not a prototype
+    if (obj !== Object.prototype && obj !== Array.prototype && obj !== Function.prototype) {
+        obj.index = value;
+    }
+    return value;
+}
+
+function safeGetOffset(obj) {
+    return Object.prototype.hasOwnProperty.call(obj, __OFFSET) ? obj[__OFFSET] : undefined;
+}
+
+function safeGetFrom(obj) {
+    return Object.prototype.hasOwnProperty.call(obj, 'from') ? obj.from : 0;
+}
+
+function safeSetOffset(obj, value) {
+    // Prevent prototype pollution by checking that the object is not a prototype
+    if (obj !== Object.prototype && obj !== Array.prototype && obj !== Function.prototype) {
+        obj[__OFFSET] = value;
+    }
+    return value;
+}
+
+function safeSetFrom(obj, value) {
+    // Prevent prototype pollution by checking that the object is not a prototype
+    if (obj !== Object.prototype && obj !== Array.prototype && obj !== Function.prototype) {
+        obj.from = value;
+    }
+    return value;
+}
+
+// Safe key processing function to prevent prototype pollution
+function processSafeKey(key) {
+    if (key == null || typeof key !== 'object') {
+        return key;
+    }
+    
+    if (Array.isArray(key)) {
+        var keyIndex = safeGetIndex(key);
+        if (keyIndex === 0) {
+            safeSetIndex(key, 0);
+        }
+        var arrayKey = key[keyIndex];
+        
+        if (arrayKey != null && typeof arrayKey === 'object') {
+            var keyOffset = safeGetOffset(arrayKey);
+            var keyFrom = safeGetFrom(arrayKey);
+            
+            if (keyOffset === void 0) {
+                safeSetOffset(arrayKey, keyFrom);
+                if (!Object.prototype.hasOwnProperty.call(arrayKey, 'from') && keyFrom === 0) {
+                    safeSetFrom(arrayKey, 0);
+                }
+            }
+            return keyOffset === void 0 ? keyFrom : keyOffset;
+        }
+        return arrayKey;
+    } else {
+        var objOffset = safeGetOffset(key);
+        var objFrom = safeGetFrom(key);
+        
+        if (objOffset === void 0) {
+            safeSetOffset(key, objFrom);
+            if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                safeSetFrom(key, 0);
+            }
+        }
+        return objOffset === void 0 ? objFrom : objOffset;
+    }
+}
         __INVALIDATED, __REFS_LENGTH,
         __KEY, __SELF, __PARENT, __ROOT,
         $TYPE, $SIZE, $EXPIRES, $TIMESTAMP
@@ -4030,11 +4107,36 @@ function getPathSet(model, path, boundPath) {
                                                         !(!(x$2[0] !== '_' || x$2[1] !== '_') || (x$2 === __SELF || x$2 === __PARENT || x$2 === __ROOT)) && (dest$2[x$2] = src$2[x$2]);
                                                     }
                                                 }
-                                            }
-                                            json = dest$2;
-                                            if (json != null && typeof json === 'object' && !Array.isArray(json)) {
-                                                json[$TYPE] = GROUP;
-                                            }
+                        if (Array.isArray(key)) {
+                            var keyIndex = safeGetIndex(key);
+                            if (keyIndex === 0) {
+                                safeSetIndex(key, 0);
+                            }
+                            key = key[keyIndex];
+                            if (key != null && typeof key === 'object') {
+                                var keyOffset = safeGetOffset(key);
+                                var keyFrom = safeGetFrom(key);
+                                
+                                if (keyOffset === void 0) {
+                                    safeSetOffset(key, keyFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = keyOffset === void 0 ? keyFrom : keyOffset;
+                            }
+                        } else if (key != null && typeof key === 'object') {
+                            var objOffset = safeGetOffset(key);
+                            var objFrom = safeGetFrom(key);
+                            
+                            if (objOffset === void 0) {
+                                safeSetOffset(key, objFrom);
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                    safeSetFrom(key, 0);
+                                }
+                            }
+                            key = objOffset === void 0 ? objFrom : objOffset;
+                        }
                                         }
                                     } else if (boxed === true) {
                                         var dest$3 = node, src$3 = dest$3, i$3 = -1, n$3, x$3;
@@ -4429,11 +4531,36 @@ function getPathSetsAsJSON(model, pathSets, values, errorSelector, boundPath) {
                                             }
                                         } else if (errorsAsValues === true || nodeType !== ERROR) {
                                             if (node != null) {
-                                                var dest$5 = nodeValue, src$5 = dest$5, i$7 = -1, n$7, x$5;
-                                                if (dest$5 != null && typeof dest$5 === 'object') {
-                                                    if (Array.isArray(src$5)) {
-                                                        dest$5 = new Array(n$7 = src$5.length);
-                                                        while (++i$7 < n$7) {
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
+                            }
                                                             dest$5[i$7] = src$5[i$7];
                                                         }
                                                     } else {
@@ -4938,11 +5065,36 @@ function getPathSetsAsJSONG(model, pathSets, values, errorSelector, boundPath) {
                                             dest$8 = new Array(n$10 = src$8.length);
                                             while (++i$10 < n$10) {
                                                 dest$8[i$10] = src$8[i$10];
-                                            }
-                                        } else {
-                                            dest$8 = Object.create(null);
-                                            for (x$8 in src$8) {
-                                                !(!(x$8[0] !== '_' || x$8[1] !== '_') || (x$8 === __SELF || x$8 === __PARENT || x$8 === __ROOT)) && (dest$8[x$8] = src$8[x$8]);
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
+                            }
                                             }
                                         }
                                     }
@@ -5377,11 +5529,36 @@ function getPathSetsAsPathMap(model, pathSets, values, errorSelector, boundPath)
                                                 if (dest$2 != null && typeof dest$2 === 'object') {
                                                     if (Array.isArray(src$2)) {
                                                         dest$2 = new Array(n$4 = src$2.length);
-                                                        while (++i$4 < n$4) {
-                                                            dest$2[i$4] = src$2[i$4];
-                                                        }
-                                                    } else {
-                                                        dest$2 = Object.create(null);
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
+                            }
                                                         for (x$2 in src$2) {
                                                             !(!(x$2[0] !== '_' || x$2[1] !== '_') || (x$2 === __SELF || x$2 === __PARENT || x$2 === __ROOT)) && (dest$2[x$2] = src$2[x$2]);
                                                         }
@@ -5773,10 +5950,35 @@ function getPathSetsAsValues(model, pathSets, values, errorSelector, boundPath) 
                             while (++i < n) {
                                 copy[i] = requestedPath[i];
                             }
-                            requestedPaths[requestedPaths.length] = copy;
-                            var i$2 = -1, n$2 = optimizedPath.length, copy$2 = new Array(n$2);
-                            while (++i$2 < n$2) {
-                                copy$2[i$2] = optimizedPath[i$2];
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
                             }
                             optimizedPaths[optimizedPaths.length] = copy$2;
                             var pbv = Object.create(null), i$3 = -1, n$3 = requestedPath.length, val, copy$3 = new Array(n$3);
@@ -6337,11 +6539,36 @@ function invalidatePathSets(model, pathSets, values, errorSelector, boundPath) {
                             /* Walk Link */
                             var key$2, isKeySet$2 = false;
                             linkHeight = linkPath.length;
-                            node = nodeParent = nodeRoot;
-                            linkDepth = linkDepth;
-                            follow_link_7643:
-                                do {
-                                    nodeType = node && node[$TYPE] || void 0;
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
+                            }
                                     nodeValue = nodeType === SENTINEL ? node[VALUE] : node;
                                     if (linkDepth === linkHeight || (node == null || nodeType !== void 0 || typeof node !== 'object' || Array.isArray(nodeValue))) {
                                         if ((nodeExpires = (node && node[$EXPIRES]) != null) && (nodeExpires !== 1 && (nodeExpires === 0 || nodeExpires < now())) || node != null && node[__INVALIDATED] === true) {
@@ -7581,11 +7808,36 @@ function setJSONG(model, envelope, errorSelector, boundPath) {
                                                 }
                                                 if ((node = linkPaths$2 && linkPaths$2.pop()) !== void 0) {
                                                     ++depth$5;
-                                                } else {
-                                                    stack$4[depth$5--] = void 0;
-                                                }
-                                            }
-                                            node = self$4;
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
+                            }
                                         }
                                     }
                                     nodeParent = self$3;
@@ -8754,11 +9006,36 @@ function setJSONGsAsJSON(model, envelopes, values, errorSelector, boundPath) {
                                                     node.__next = node.__prev = void 0;
                                                     head$4 = tail$4 = next$4 = prev$4 = void 0;
                                                     ;
-                                                    nodeParent[node[__KEY]] = node[__SELF] = node[__PARENT] = node[__ROOT] = void 0;
-                                                }
-                                            } else if (node[__GENERATION_UPDATED] !== __GENERATION_VERSION) {
-                                                var self$4 = node, stack$4 = [], depth$5 = 0, linkPaths$2, ref$13, i$13, k$2, n$10;
-                                                while (depth$5 > -1) {
+                                if (Array.isArray(key)) {
+                                    var keyIndex = safeGetIndex(key);
+                                    if (keyIndex === 0) {
+                                        safeSetIndex(key, 0);
+                                    }
+                                    key = key[keyIndex];
+                                    if (key != null && typeof key === 'object') {
+                                        var keyOffset = safeGetOffset(key);
+                                        var keyFrom = safeGetFrom(key);
+                                        
+                                        if (keyOffset === void 0) {
+                                            safeSetOffset(key, keyFrom);
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                                safeSetFrom(key, 0);
+                                            }
+                                        }
+                                        key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                    }
+                                } else if (key != null && typeof key === 'object') {
+                                    var objOffset = safeGetOffset(key);
+                                    var objFrom = safeGetFrom(key);
+                                    
+                                    if (objOffset === void 0) {
+                                        safeSetOffset(key, objFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = objOffset === void 0 ? objFrom : objOffset;
+                                }
                                                     if ((linkPaths$2 = stack$4[depth$5]) === void 0) {
                                                         i$13 = k$2 = -1;
                                                         n$10 = node[__REFS_LENGTH] || 0;
@@ -10038,11 +10315,36 @@ function setJSONGsAsJSONG(model, envelopes, values, errorSelector, boundPath) {
                                         }
                                         nodeParent[key] = node = message;
                                         nodeType = node && node[$TYPE] || void 0;
-                                        nodeValue = messageValue;
-                                        node = !node[__SELF] && ((node[__SELF] = node) || true) && ((node[__KEY] = key) || true) && ((node[__PARENT] = nodeParent) || true) && ((node[__ROOT] = nodeRoot) || true) && (node[__GENERATION] || (node[__GENERATION] = ++__GENERATION_GUID) && node) && ((!nodeType || nodeType === SENTINEL) && Array.isArray(nodeValue) && (nodeValue[__CONTAINER] = node)) || node;
-                                        var self$3 = nodeParent, child$2 = node;
-                                        while (node = nodeParent) {
-                                            nodeParent = node[__PARENT];
+                                if (Array.isArray(key)) {
+                                    var keyIndex = safeGetIndex(key);
+                                    if (keyIndex === 0) {
+                                        safeSetIndex(key, 0);
+                                    }
+                                    key = key[keyIndex];
+                                    if (key != null && typeof key === 'object') {
+                                        var keyOffset = safeGetOffset(key);
+                                        var keyFrom = safeGetFrom(key);
+                                        
+                                        if (keyOffset === void 0) {
+                                            safeSetOffset(key, keyFrom);
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                                safeSetFrom(key, 0);
+                                            }
+                                        }
+                                        key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                    }
+                                } else if (key != null && typeof key === 'object') {
+                                    var objOffset = safeGetOffset(key);
+                                    var objFrom = safeGetFrom(key);
+                                    
+                                    if (objOffset === void 0) {
+                                        safeSetOffset(key, objFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = objOffset === void 0 ? objFrom : objOffset;
+                                }
                                             if ((node[$SIZE] = (node[$SIZE] || 0) - sizeOffset$2) <= 0 && nodeParent) {
                                                 var ref$11 = node[$TYPE] === SENTINEL ? node[VALUE] : node, destination$4;
                                                 if (ref$11 && Array.isArray(ref$11)) {
@@ -11241,11 +11543,36 @@ function setJSONGsAsPathMap(model, envelopes, values, errorSelector, boundPath) 
                                                     ;
                                                     nodeParent[invKey$2] = node[__SELF] = node[__PARENT] = node[__ROOT] = void 0;
                                                 }
-                                                ;
-                                                delete stack$3[offset$3 + 0];
-                                                delete stack$3[offset$3 + 1];
-                                                delete stack$3[offset$3 + 2];
-                                                delete stack$3[offset$3 + 3];
+                                if (Array.isArray(key)) {
+                                    var keyIndex = safeGetIndex(key);
+                                    if (keyIndex === 0) {
+                                        safeSetIndex(key, 0);
+                                    }
+                                    key = key[keyIndex];
+                                    if (key != null && typeof key === 'object') {
+                                        var keyOffset = safeGetOffset(key);
+                                        var keyFrom = safeGetFrom(key);
+                                        
+                                        if (keyOffset === void 0) {
+                                            safeSetOffset(key, keyFrom);
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                                safeSetFrom(key, 0);
+                                            }
+                                        }
+                                        key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                    }
+                                } else if (key != null && typeof key === 'object') {
+                                    var objOffset = safeGetOffset(key);
+                                    var objFrom = safeGetFrom(key);
+                                    
+                                    if (objOffset === void 0) {
+                                        safeSetOffset(key, objFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = objOffset === void 0 ? objFrom : objOffset;
+                                }
                                                 delete stack$3[offset$3 + 4];
                                                 delete stack$3[offset$3 + 5];
                                                 delete stack$3[offset$3 + 6];
@@ -12401,11 +12728,36 @@ function setJSONGsAsValues(model, envelopes, values, errorSelector, boundPath) {
                                                     if ((keys$2 = stack$3[offset$3 + 6]) === void 0) {
                                                         keys$2 = stack$3[offset$3 + 6] = [];
                                                         index$3 = -1;
-                                                        for (var childKey$2 in node) {
-                                                            !(!(childKey$2[0] !== '_' || childKey$2[1] !== '_') || (childKey$2 === __SELF || childKey$2 === __PARENT || childKey$2 === __ROOT) || childKey$2[0] === '$') && (keys$2[++index$3] = childKey$2);
-                                                        }
-                                                    }
-                                                    index$3 = stack$3[offset$3 + 7] || (stack$3[offset$3 + 7] = 0);
+                                if (Array.isArray(key)) {
+                                    var keyIndex = safeGetIndex(key);
+                                    if (keyIndex === 0) {
+                                        safeSetIndex(key, 0);
+                                    }
+                                    key = key[keyIndex];
+                                    if (key != null && typeof key === 'object') {
+                                        var keyOffset = safeGetOffset(key);
+                                        var keyFrom = safeGetFrom(key);
+                                        
+                                        if (keyOffset === void 0) {
+                                            safeSetOffset(key, keyFrom);
+                                            if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                                safeSetFrom(key, 0);
+                                            }
+                                        }
+                                        key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                    }
+                                } else if (key != null && typeof key === 'object') {
+                                    var objOffset = safeGetOffset(key);
+                                    var objFrom = safeGetFrom(key);
+                                    
+                                    if (objOffset === void 0) {
+                                        safeSetOffset(key, objFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = objOffset === void 0 ? objFrom : objOffset;
+                                }
                                                     if (index$3 < keys$2.length) {
                                                         stack$3[offset$3 + 7] = index$3 + 1;
                                                         stack$3[offset$3 = ++depth$4 * 8] = node;
@@ -18469,11 +18821,36 @@ function setPathSet(model, path, value, errorSelector, boundPath) {
                                 invKey$2 = stack$3[offset$3 + 1];
                                 node = stack$3[offset$3 + 2];
                                 if ((childType$2 = stack$3[offset$3 + 3]) === void 0 || (childType$2 = void 0)) {
-                                    childType$2 = stack$3[offset$3 + 3] = node && node[$TYPE] || void 0 || null;
+                        if (Array.isArray(key)) {
+                            var keyIndex = safeGetIndex(key);
+                            if (keyIndex === 0) {
+                                safeSetIndex(key, 0);
+                            }
+                            key = key[keyIndex];
+                            if (key != null && typeof key === 'object') {
+                                var keyOffset = safeGetOffset(key);
+                                var keyFrom = safeGetFrom(key);
+                                
+                                if (keyOffset === void 0) {
+                                    safeSetOffset(key, keyFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
                                 }
-                                childValue$2 = stack$3[offset$3 + 4] || (stack$3[offset$3 + 4] = childType$2 === SENTINEL ? node[VALUE] : node);
-                                if ((isBranch$2 = stack$3[offset$3 + 5]) === void 0) {
-                                    isBranch$2 = stack$3[offset$3 + 5] = !childType$2 && (node != null && typeof node === 'object') && !Array.isArray(childValue$2);
+                                key = keyOffset === void 0 ? keyFrom : keyOffset;
+                            }
+                        } else if (key != null && typeof key === 'object') {
+                            var objOffset = safeGetOffset(key);
+                            var objFrom = safeGetFrom(key);
+                            
+                            if (objOffset === void 0) {
+                                safeSetOffset(key, objFrom);
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                    safeSetFrom(key, 0);
+                                }
+                            }
+                            key = objOffset === void 0 ? objFrom : objOffset;
+                        }
                                 }
                                 if (isBranch$2 === true) {
                                     if ((keys$2 = stack$3[offset$3 + 6]) === void 0) {
@@ -19324,11 +19701,36 @@ function setPathSetsAsJSON(model, pathValues, values, errorSelector, boundPath) 
                                 newNode[$SIZE] = nodeSize;
                             } else {
                                 nodeType = newNode[$TYPE] = nodeType || GROUP;
-                                newNode[$SIZE] = nodeSize = value && value[$SIZE] || 0 || 50 + 1;
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
                             }
-                            ;
-                            if (node !== newNode && (node != null && typeof node === 'object')) {
-                                var nodeRefsLength$2 = node[__REFS_LENGTH] || 0, destRefsLength$2 = newNode[__REFS_LENGTH] || 0, i$5 = -1, ref$6;
                                 while (++i$5 < nodeRefsLength$2) {
                                     if ((ref$6 = node[__REF + i$5]) !== void 0) {
                                         ref$6[__CONTEXT] = newNode;
@@ -20280,11 +20682,36 @@ function setPathSetsAsJSONG(model, pathValues, values, errorSelector, boundPath)
                             json = json;
                             depth = depth;
                             continue follow_path_set_8259;
-                        }
-                    } else if (depth === height || !!nodeType || !(node != null && typeof node === 'object')) {
-                        if ((nodeExpires = (node && node[$EXPIRES]) != null) && (nodeExpires !== 1 && (nodeExpires === 0 || nodeExpires < now())) || node != null && node[__INVALIDATED] === true) {
-                            nodeType = void 0;
-                            nodeValue = void 0;
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
+                            }
                             node = (expired[expired.length] = node) && (node[__INVALIDATED] = true) && void 0;
                         }
                         if (key != null) {
@@ -21167,11 +21594,36 @@ function setPathSetsAsPathMap(model, pathValues, values, errorSelector, boundPat
                                                     node = self$2;
                                                 }
                                                 node = node$2[__PARENT];
-                                            }
-                                            node = self;
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
                                         }
-                                        optimizedPath[optimizedPath.length = linkDepth] = key$2;
                                     }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
+                            }
                                     node = node;
                                     linkDepth = linkDepth + 1;
                                     continue follow_link_12080;
@@ -22011,11 +22463,36 @@ function setPathSetsAsValues(model, pathValues, values, errorSelector, boundPath
                                                     ;
                                                     delete stack[offset$2 + 0];
                                                     delete stack[offset$2 + 1];
-                                                    delete stack[offset$2 + 2];
-                                                    delete stack[offset$2 + 3];
-                                                    delete stack[offset$2 + 4];
-                                                    delete stack[offset$2 + 5];
-                                                    delete stack[offset$2 + 6];
+                            if (Array.isArray(key)) {
+                                var keyIndex = safeGetIndex(key);
+                                if (keyIndex === 0) {
+                                    safeSetIndex(key, 0);
+                                }
+                                key = key[keyIndex];
+                                if (key != null && typeof key === 'object') {
+                                    var keyOffset = safeGetOffset(key);
+                                    var keyFrom = safeGetFrom(key);
+                                    
+                                    if (keyOffset === void 0) {
+                                        safeSetOffset(key, keyFrom);
+                                        if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyFrom === 0) {
+                                            safeSetFrom(key, 0);
+                                        }
+                                    }
+                                    key = keyOffset === void 0 ? keyFrom : keyOffset;
+                                }
+                            } else if (key != null && typeof key === 'object') {
+                                var objOffset = safeGetOffset(key);
+                                var objFrom = safeGetFrom(key);
+                                
+                                if (objOffset === void 0) {
+                                    safeSetOffset(key, objFrom);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                                        safeSetFrom(key, 0);
+                                    }
+                                }
+                                key = objOffset === void 0 ? objFrom : objOffset;
+                            }
                                                     delete stack[offset$2 + 7];
                                                     --depth$2;
                                                 }

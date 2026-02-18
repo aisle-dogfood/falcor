@@ -10,6 +10,83 @@ var Observable = Rx.Observable,
     µSize = 0.25,
     MIN_SAFE_INTEGER = -Math.pow(2, 53) - 1;
 
+// Helper functions to prevent prototype pollution
+function safeGetIndex(obj) {
+    return Object.prototype.hasOwnProperty.call(obj, 'index') ? obj.index : 0;
+}
+
+function safeSetIndex(obj, value) {
+    // Prevent prototype pollution by checking that the object is not a prototype
+    if (obj !== Object.prototype && obj !== Array.prototype && obj !== Function.prototype) {
+        obj.index = value;
+    }
+    return value;
+}
+
+function safeGetOffset(obj) {
+    return Object.prototype.hasOwnProperty.call(obj, 'offset') ? obj.offset : undefined;
+}
+
+function safeGetFrom(obj) {
+    return Object.prototype.hasOwnProperty.call(obj, 'from') ? obj.from : 0;
+}
+
+function safeSetOffset(obj, value) {
+    // Prevent prototype pollution by checking that the object is not a prototype
+    if (obj !== Object.prototype && obj !== Array.prototype && obj !== Function.prototype) {
+        obj.offset = value;
+    }
+    return value;
+}
+
+function safeSetFrom(obj, value) {
+    // Prevent prototype pollution by checking that the object is not a prototype
+    if (obj !== Object.prototype && obj !== Array.prototype && obj !== Function.prototype) {
+        obj.from = value;
+    }
+    return value;
+}
+
+// Safe key processing function to prevent prototype pollution
+function processSafeKey(key) {
+    if (key == null || typeof key !== 'object') {
+        return key;
+    }
+    
+    if (Array.isArray(key)) {
+        var keyIndex = safeGetIndex(key);
+        if (keyIndex === 0) {
+            safeSetIndex(key, 0);
+        }
+        var arrayKey = key[keyIndex];
+        
+        if (arrayKey != null && typeof arrayKey === 'object') {
+            var keyOffset = safeGetOffset(arrayKey);
+            var keyFrom = safeGetFrom(arrayKey);
+            
+            if (keyOffset === void 0) {
+                safeSetOffset(arrayKey, keyFrom);
+                if (!Object.prototype.hasOwnProperty.call(arrayKey, 'from') && keyFrom === 0) {
+                    safeSetFrom(arrayKey, 0);
+                }
+            }
+            return keyOffset === void 0 ? keyFrom : keyOffset;
+        }
+        return arrayKey;
+    } else {
+        var objOffset = safeGetOffset(key);
+        var objFrom = safeGetFrom(key);
+        
+        if (objOffset === void 0) {
+            safeSetOffset(key, objFrom);
+            if (!Object.prototype.hasOwnProperty.call(key, 'from') && objFrom === 0) {
+                safeSetFrom(key, 0);
+            }
+        }
+        return objOffset === void 0 ? objFrom : objOffset;
+    }
+}
+
 function PathEvaluator(maxSize, collectRatio, loader, cache, path, now, errorSelector) {
     if (loader != null && typeof loader === 'object') {
         this.loader = loader;
@@ -236,17 +313,14 @@ function hardBind(path) {
         pe.__refIndex = backRefs;
         pe.__context = context;
     } else {
-        pe._path = (this._path || (this._path = [])).concat(path);
-        pe.__context = null;
-    }
-    return pe;
-}
-
-function deferBind(path) {
-    if (!Array.isArray(path)) {
-        throw new Error('PathEvaluator.deferBind must be called with an Array path.');
-    }
-    var self = this;
+                key = path[column];
+                if (key != null && typeof key === 'object') {
+                    key = processSafeKey(key);
+                }
+                if (key == null) {
+                    continue;
+                }
+                original[original.length = column] = key;
     return Observable.create(function (observer) {
         observer.onNext(self.hardBind(path));
         observer.onCompleted();
@@ -475,14 +549,11 @@ function getPath(path_, cache, parent, bound) {
                                     do {
                                         // Roll back to the path that was interrupted.
                                         // We might have to roll back multiple times,
-                                        // as in the case where a reference references
-                                        // a reference.
-                                        path = refs[--depth];
-                                        column = cols[depth];
-                                        offset = last - column;
-                                        last = path.length - 1;
-                                    } while (depth > -1 && column === last);
-                                    if ( // If the reference we followed landed on another reference ~and~
+                    if (Array.isArray(key)) {
+                        key = processSafeKey(key);
+                    } else {
+                        key = processSafeKey(key);
+                    }
                                     // the recursed path has more keys to process, Kanye the path we
                                     // rolled back to -- we're gonna let it finish, but first we gotta
                                     // say that this reference had the best album of ALL. TIME.
@@ -639,14 +710,11 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
     path = bound || self._path;
     contexts = paths.contexts || (paths.contexts = []);
     messages = paths.messages || (paths.messages = []);
-    batchedPathMaps = paths.batchedPathMaps || (paths.batchedPathMaps = []);
-    originalMisses = paths.originalMisses || (paths.originalMisses = []);
-    optimizedMisses = paths.optimizedMisses || (paths.optimizedMisses = []);
-    errors = paths.errors || (paths.errors = []);
-    refs = paths.refs || (paths.refs = []);
-    crossed = paths.crossed || (paths.crossed = []);
-    cols = paths.cols || (paths.cols = []);
-    pbv = paths.pbv || (paths.pbv = {
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
         path: [],
         optimized: []
     });
@@ -877,14 +945,11 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                                                 column = cols[depth];
                                                 offset = last - column;
                                                 last = path.length - 1;
-                                            } while (depth > -1 && column === last);
-                                            if ( // If the reference we followed landed on another reference ~and~
-                                            // the recursed path has more keys to process, Kanye the path we
-                                            // rolled back to -- we're gonna let it finish, but first we gotta
-                                            // say that this reference had the best album of ALL. TIME.
-                                                column < last) {
-                                                while (Array.isArray(contextValue = (contextType // If the context is a sentinel, get its value.
-                                                    // Otherwise, set contextValue to the context.
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
                                                     = context && context[ // If the context is a sentinel, get its value.
                                                     // Otherwise, set contextValue to the context.
                                                     '$type']) === 'sentinel' ? context.value : context)) {
@@ -1212,14 +1277,11 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
             });
         }
         return self._batched === true ? self._batches.batch(originalMisses, refreshing && originalMisses || optimizedMisses, observer) : self._batches.flush(originalMisses, refreshing && originalMisses || optimizedMisses, observer);
-    } else {
-        if (streaming === false) {
-            onNext({
-                paths: paths,
-                value: contexts[-1]
-            });
-        }
-        if (errors.length === 0) {
+                    if (Array.isArray(key)) {
+                        key = processSafeKey(key);
+                    } else {
+                        key = processSafeKey(key);
+                    }
 //            onCompleted();
         } else if (errors.length === 1) {
             onError(errors[0]);
@@ -1481,14 +1543,11 @@ function setPath(pathOrPBV, valueOrCache, cache, parent, bound) {
                                     // rolled back to -- we're gonna let it finish, but first we gotta
                                     // say that this reference had the best album of ALL. TIME.
                                         column < last) {
-                                        while (Array.isArray(contextValue = (contextType // If the context is a sentinel, get its value.
-                                            // Otherwise, set contextValue to the context.
-                                            = context && context[ // If the context is a sentinel, get its value.
-                                            // Otherwise, set contextValue to the context.
-                                            '$type']) === 'sentinel' ? context.value : context)) {
-                                            var head$3 = root.__head,
-                                                tail$3 = root.__tail;
-                                            if (context && context['$expires'] !== 1) {
+                    if (Array.isArray(key)) {
+                        key = processSafeKey(key);
+                    } else {
+                        key = processSafeKey(key);
+                    }
                                                 var next$3 = context.__next,
                                                     prev$3 = context.__prev;
                                                 if (context !== head$3) {
@@ -1990,14 +2049,11 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
     path = bound || self._path;
     contexts = paths.contexts || (paths.contexts = []);
     messages = paths.messages || (paths.messages = []);
-    batchedPathMaps = paths.batchedPathMaps || (paths.batchedPathMaps = []);
-    originalMisses = paths.originalMisses || (paths.originalMisses = []);
-    optimizedMisses = paths.optimizedMisses || (paths.optimizedMisses = []);
-    errors = paths.errors || (paths.errors = []);
-    refs = paths.refs || (paths.refs = []);
-    crossed = paths.crossed || (paths.crossed = []);
-    cols = paths.cols || (paths.cols = []);
-    pbv = paths.pbv || (paths.pbv = {
+                        if (Array.isArray(key)) {
+                            key = processSafeKey(key);
+                        } else {
+                            key = processSafeKey(key);
+                        }
         path: [],
         optimized: []
     });
@@ -2275,14 +2331,11 @@ function setPaths(pbvs, onNext, onError, onCompleted, cache, parent, bound) {
                                                 // Otherwise, set contextValue to the context.
                                                 '$type']) === 'sentinel' ? context.value : context)) {
                                                 var head$3 = root.__head,
-                                                    tail$3 = root.__tail;
-                                                if (context && context['$expires'] !== 1) {
-                                                    var next$3 = context.__next,
-                                                        prev$3 = context.__prev;
-                                                    if (context !== head$3) {
-                                                        next$3 && (next$3 != null && typeof next$3 === 'object') && (next$3.__prev = prev$3);
-                                                        prev$3 && (prev$3 != null && typeof prev$3 === 'object') && (prev$3.__next = next$3);
-                                                        (next$3 = head$3) && (next$3 != null && typeof next$3 === 'object') && (head$3.__prev = context);
+                        if (Array.isArray(key)) {
+                            key = processSafeKey(key);
+                        } else {
+                            key = processSafeKey(key);
+                        }
                                                         root.__head = root.__next = head$3 = context;
                                                         if (head$3 != null && typeof head$3 === 'object') {
                                                             head$3.__next = next$3;
@@ -2882,14 +2935,11 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
     cols[-1] = 0;
     crossed[-1] = boundOptimized = path;
     paths = pbf.paths || (pbf.paths = []);
-    if (onNext || onError || onCompleted || batchedPathMap == null) {
-        observer = {
-            onNext: onNext || noop,
-            onError: onError || noop,
-            onCompleted: onCompleted || noop,
-            originals: paths.concat(),
-            optimized: paths.concat(),
-            count: 0,
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
             path: [],
             errors: [],
             streaming: streaming,
@@ -4051,14 +4101,11 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                                                 // Otherwise, set contextValue to the context.
                                                 '$type']) === 'sentinel' ? context.value : context)) {
                                                 var head$18 = root.__head,
-                                                    tail$18 = root.__tail;
-                                                if (context && context['$expires'] !== 1) {
-                                                    var next$18 = context.__next,
-                                                        prev$18 = context.__prev;
-                                                    if (context !== head$18) {
-                                                        next$18 && (next$18 != null && typeof next$18 === 'object') && (next$18.__prev = prev$18);
-                                                        prev$18 && (prev$18 != null && typeof prev$18 === 'object') && (prev$18.__next = next$18);
-                                                        (next$18 = head$18) && (next$18 != null && typeof next$18 === 'object') && (head$18.__prev = context);
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
                                                         root.__head = root.__next = head$18 = context;
                                                         if (head$18 != null && typeof head$18 === 'object') {
                                                             head$18.__next = next$18;
@@ -4691,14 +4738,11 @@ function setPBF(pbf, onNext, onError, onCompleted, cache, parent, bound) {
                     }
                     context$1463 = parent$6;
                 } while (context$1463 !== void 0);
-            }
-        }
-        if ((root.__tail = root.__prev = tail$24) == null) {
-            root.__head = root.__next = void 0;
-        } else {
-            tail$24.__next = void 0;
-        }
-    }
+                    if (Array.isArray(key)) {
+                        key = processSafeKey(key);
+                    } else {
+                        key = processSafeKey(key);
+                    }
     return Disposable.empty;
 }
 
@@ -4877,14 +4921,11 @@ function invalidatePath(path_, cache, parent, bound) {
                                                 var next$3 = context.__next,
                                                     prev$3 = context.__prev;
                                                 if (context !== head$3) {
-                                                    next$3 && (next$3 != null && typeof next$3 === 'object') && (next$3.__prev = prev$3);
-                                                    prev$3 && (prev$3 != null && typeof prev$3 === 'object') && (prev$3.__next = next$3);
-                                                    (next$3 = head$3) && (next$3 != null && typeof next$3 === 'object') && (head$3.__prev = context);
-                                                    root.__head = root.__next = head$3 = context;
-                                                    if (head$3 != null && typeof head$3 === 'object') {
-                                                        head$3.__next = next$3;
-                                                        head$3.__prev = void 0;
-                                                    }
+                    if (Array.isArray(key)) {
+                        key = processSafeKey(key);
+                    } else {
+                        key = processSafeKey(key);
+                    }
                                                 }
                                                 if (tail$3 == null || context === tail$3) {
                                                     root.__tail = root.__prev = tail$3 = prev$3 || context;
@@ -5049,14 +5090,11 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
     messageParent = messageCache;
     cache = cache || self._cache;
     bound = path;
-    if (parent == null && (parent = self.__context) == null) {
-        if (path.length > 0) {
-            pbv = self._getContext();
-            path = pbv.path;
-            pbv.path = [];
-            pbv.optimized = [];
-            parent = pbv.value || {};
-        } else {
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
             parent = cache;
         }
     }
@@ -5235,14 +5273,11 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                                                             root.__head = root.__next = head$3 = context;
                                                             if (head$3 != null && typeof head$3 === 'object') {
                                                                 head$3.__next = next$3;
-                                                                head$3.__prev = void 0;
-                                                            }
-                                                        }
-                                                        if (tail$3 == null || context === tail$3) {
-                                                            root.__tail = root.__prev = tail$3 = prev$3 || context;
-                                                        }
-                                                    }
-                                                    if ((context = context.__context) !== void 0) {
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
                                                     } else {
                                                         contextParent = contextCache;
                                                         refs[depth] = path;
@@ -5391,14 +5426,11 @@ function invalidatePaths(paths_, onNext, onError, onCompleted, cache, parent, bo
                 }
         }
     }
-    if (onNext) {
-        onNext(this);
-    }
-    if (onCompleted) {
-        onCompleted();
-    }
-    return Disposable.empty;
-}
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
 
 function pathMapWithObserver(paths_, observer_, parent) {
     var self = this,
@@ -5417,14 +5449,11 @@ function pathMapWithObserver(paths_, observer_, parent) {
     for (; index < length; paths.index = ++index) {
         path = paths[index];
         column = 0;
-        offset = 0;
-        last = path.length - 1;
-        while (column >= 0) {
-            contextParent = contexts[column - 1];
-            building_pathmap:
-                while (true) {
-                    for (; column < last; ++column) {
-                        key = path[column];
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
                                 key = key[key.index || (key.index = 0)];
@@ -5497,14 +5526,11 @@ function pathMapWithObserver(paths_, observer_, parent) {
     }
     return parent;
 }
-
-function pathMapWithoutObserver(paths_, observer_, pathMap) {
-    var self = this,
-        root = self._root,
-        connected, materialized, streaming, refreshing, contexts, messages, error, errors, observer, observers, expired, paths, path, key, column, offset, last, index, length, sizeOffset, boundOptimized, original, optimized, pbv, originalMiss, originalMisses, optimizedMiss, optimizedMisses, refs, cols, crossed, depth, batchedOptimizedPathMap, batchedPathMap, batchedPathMaps, contextCache, contextParent, context, contextValue, contextType, contextSize, contextExpires, contextTimestamp, boundContext, messageCache, messageParent, message, messageValue, messageType, messageSize, messageExpires, messageTimestamp;
-    observer = observer_;
-    paths = paths_;
-    index = 0;
+                            if (Array.isArray(key)) {
+                                key = processSafeKey(key);
+                            } else {
+                                key = processSafeKey(key);
+                            }
     length = paths.length;
     observers = ((contexts = [])[-1] = context = pathMap).__observers;
     if (observer != null) {
@@ -5525,14 +5551,11 @@ function pathMapWithoutObserver(paths_, observer_, pathMap) {
                 while (true) {
                     for (; column < last; ++column) {
                         key = path[column];
-                        if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
-                                if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
-                                }
+                                key = processSafeKey(key);
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                key = processSafeKey(key);
+                            }
                             }
                         }
                         if (key == null) {
