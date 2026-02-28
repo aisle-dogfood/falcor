@@ -1,5 +1,6 @@
 var express = require("express");
 var app = express();
+var basicAuth = require('express-basic-auth');
 
 // Exports
 module.exports = {
@@ -18,6 +19,12 @@ function listen(serverPort, launchWindow, cb) {
 }
 
 function coverage(serverPort, launchWindow) {
+    // Add basic authentication to protect coverage reports
+    app.use(basicAuth({
+        users: { 'admin': process.env.COVERAGE_PASSWORD || 'changeme' },
+        challenge: true,
+        realm: 'Coverage Reports'
+    }));
     app.use(express.static("coverage/lcov-report"));
     return listen(serverPort, launchWindow);
 }
@@ -28,6 +35,12 @@ if (require.main === module) {
     var run = process.argv[3];
     switch (run) {
         case "examples":
+            // Add basic authentication to protect examples
+            app.use(basicAuth({
+                users: { 'admin': process.env.EXAMPLES_PASSWORD || 'changeme' },
+                challenge: true,
+                realm: 'Examples'
+            }));
             app.use(express.static("."));
             app.get("/500", function(req, res) {
                 res.send(500);
