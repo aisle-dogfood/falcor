@@ -279,7 +279,25 @@ function getContext() {
     }
     return pbv;
 }
+// Helper function to safely set properties and prevent prototype pollution
+function safeSetProperty(obj, prop, value) {
+    // Check if object is safe to modify (not a prototype object)
+    if (obj != null && typeof obj === 'object' && 
+        obj.constructor === Object && 
+        !Object.prototype.isPrototypeOf.call(Object.prototype, obj)) {
+        obj[prop] = value;
+        return obj[prop];
+    }
+    return value;
+}
 
+// Helper function to safely get property with default value
+function safeGetProperty(obj, prop, defaultValue) {
+    if (obj != null && typeof obj === 'object' && Object.prototype.hasOwnProperty.call(obj, prop)) {
+        return obj[prop];
+    }
+    return defaultValue;
+}
 function getPath(path_, cache, parent, bound) {
     var self = this,
         root = self._root,
@@ -316,12 +334,12 @@ function getPath(path_, cache, parent, bound) {
                 key = path[column];
                 if (key != null && typeof key === 'object') {
                     if (Array.isArray(key)) {
-                        key = key[key.index || (key.index = 0)];
+                        key = key[safeGetProperty(key, 'index', safeSetProperty(key, 'index', 0))];
                         if (key != null && typeof key === 'object') {
-                            key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                            key = safeGetProperty(key, 'offset', safeSetProperty(key, 'offset', safeGetProperty(key, 'from', safeSetProperty(key, 'from', 0)))) || safeGetProperty(key, 'offset', 0);
                         }
                     } else {
-                        key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                        key = safeGetProperty(key, 'offset', safeSetProperty(key, 'offset', safeGetProperty(key, 'from', safeSetProperty(key, 'from', 0)))) || safeGetProperty(key, 'offset', 0);
                     }
                 }
                 if (key == null) {
