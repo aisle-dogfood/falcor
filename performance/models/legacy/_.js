@@ -946,12 +946,30 @@ function getPaths(model, paths_, onNext, onError, onCompleted, cache, parent, bo
                         key = path[column];
                         if (key != null && typeof key === 'object') {
                             if (Array.isArray(key)) {
-                                key = key[key.index || (key.index = 0)];
+                                var keyIndex = Object.prototype.hasOwnProperty.call(key, 'index') ? key.index : 0;
+                                if (!Object.prototype.hasOwnProperty.call(key, 'index')) {
+                                    Object.defineProperty(key, 'index', {value: 0, writable: true, enumerable: false, configurable: true});
+                                }
+                                key = key[keyIndex];
                                 if (key != null && typeof key === 'object') {
-                                    key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                    var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                        Object.defineProperty(key, 'offset', {value: keyOffset, writable: true, enumerable: false, configurable: true});
+                                    }
+                                    if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyOffset === 0) {
+                                        Object.defineProperty(key, 'from', {value: 0, writable: true, enumerable: false, configurable: true});
+                                    }
+                                    key = keyOffset;
                                 }
                             } else {
-                                key = key.offset === void 0 && (key.offset = key.from || (key.from = 0)) || key.offset;
+                                var keyOffset = Object.prototype.hasOwnProperty.call(key, 'offset') ? key.offset : (Object.prototype.hasOwnProperty.call(key, 'from') ? key.from : 0);
+                                if (!Object.prototype.hasOwnProperty.call(key, 'offset')) {
+                                    Object.defineProperty(key, 'offset', {value: keyOffset, writable: true, enumerable: false, configurable: true});
+                                }
+                                if (!Object.prototype.hasOwnProperty.call(key, 'from') && keyOffset === 0) {
+                                    Object.defineProperty(key, 'from', {value: 0, writable: true, enumerable: false, configurable: true});
+                                }
+                                key = keyOffset;
                             }
                         }
                         original[original.length = column] = key;
