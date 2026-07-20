@@ -79,6 +79,36 @@ describe('Cache Only', function() {
                 }).
                 subscribe(noOp, done, done);
         });
+
+        it('should not pollute Object.prototype through JSONGraph path segments', function(done) {
+            var pollutionKey = '__falcorPolluted';
+            var jsonGraphEnvelope = Object.create(null);
+            jsonGraphEnvelope.__proto__ = Object.create(null);
+            jsonGraphEnvelope.__proto__[pollutionKey] = 'polluted';
+
+            delete Object.prototype[pollutionKey];
+
+            var model = new Model({
+                cache: {}
+            });
+
+            toObservable(model.set({
+                jsonGraph: jsonGraphEnvelope,
+                paths: [['__proto__', pollutionKey]]
+            })).subscribe(function() {}, function(err) {
+                delete Object.prototype[pollutionKey];
+                done(err);
+            }, function() {
+                try {
+                    expect(Object.prototype.hasOwnProperty.call(Object.prototype, pollutionKey)).toBe(false);
+                    expect({}[pollutionKey]).toBeUndefined();
+                    expect(model.getCache()[pollutionKey]).toBeUndefined();
+                } finally {
+                    delete Object.prototype[pollutionKey];
+                }
+                done();
+            });
+        });
     });
     describe('_toJSONG', function() {
         it('should get a value from falcor.', function(done) {
